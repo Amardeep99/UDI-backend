@@ -1,0 +1,6 @@
+@UDI_backend_HostAddress = http://localhost:5239
+
+GET {{UDI_backend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

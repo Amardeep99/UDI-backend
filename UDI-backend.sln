@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35222.181
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UDI-backend", "UDI-backend\UDI-backend.csproj", "{1B9D4433-DDCF-4925-B7C0-CADAAE8307BE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1B9D4433-DDCF-4925-B7C0-CADAAE8307BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B9D4433-DDCF-4925-B7C0-CADAAE8307BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B9D4433-DDCF-4925-B7C0-CADAAE8307BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B9D4433-DDCF-4925-B7C0-CADAAE8307BE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {803C8C77-301D-4E1C-B588-F5929EBF0FF7}
+	EndGlobalSection
+EndGlobal
