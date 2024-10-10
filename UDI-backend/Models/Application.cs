@@ -11,5 +11,5 @@ public partial class Application
 
     public DateTime TravelDate { get; set; }
 
-    public virtual ICollection<Process> Processes { get; set; } = new List<Process>();
+    public virtual ICollection<Reference> References { get; set; } = new List<Reference>();
 }

@@ -21,7 +21,7 @@ public partial class UdiMssqlDatabaseContext : DbContext
 
     public virtual DbSet<Form> Forms { get; set; }
 
-    public virtual DbSet<Process> Processes { get; set; }
+    public virtual DbSet<Reference> References { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -65,40 +65,43 @@ public partial class UdiMssqlDatabaseContext : DbContext
 
         modelBuilder.Entity<Form>(entity =>
         {
-            entity.HasKey(e => e.FormId).HasName("PK__form__FB05B7BD760F52FA");
+            entity.HasKey(e => e.FormId).HasName("PK__form__FB05B7BD638D661D");
 
             entity.ToTable("form");
 
             entity.Property(e => e.FormId).HasColumnName("FormID");
-            entity.Property(e => e.HasDebt).HasColumnName("hasDebt");
             entity.Property(e => e.ObjectionReason).HasColumnType("text");
-        });
-
-        modelBuilder.Entity<Process>(entity =>
-        {
-            entity.HasKey(e => e.RefrenceId).HasName("PK__process__2DA2E1F8B1D8870B");
-
-            entity.ToTable("process");
-
-            entity.Property(e => e.RefrenceId).HasColumnName("RefrenceID");
-            entity.Property(e => e.ApplicationId).HasColumnName("ApplicationID");
-            entity.Property(e => e.FormId).HasColumnName("FormID");
             entity.Property(e => e.OrganisationId).HasColumnName("OrganisationID");
+            entity.Property(e => e.ReferenceId).HasColumnName("ReferenceID");
 
-            entity.HasOne(d => d.Application).WithMany(p => p.Processes)
-                .HasForeignKey(d => d.ApplicationId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__process__Applica__6B24EA82");
-
-            entity.HasOne(d => d.Form).WithMany(p => p.Processes)
-                .HasForeignKey(d => d.FormId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__process__FormID__6A30C649");
-
-            entity.HasOne(d => d.Organisation).WithMany(p => p.Processes)
+            entity.HasOne(d => d.Organisation).WithMany(p => p.Forms)
                 .HasForeignKey(d => d.OrganisationId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__process__Organis__693CA210");
+                .HasConstraintName("FK__form__Organisati__02084FDA");
+
+            entity.HasOne(d => d.Reference).WithMany(p => p.Forms)
+                .HasForeignKey(d => d.ReferenceId)
+                .HasConstraintName("FK__form__ReferenceI__03F0984C");
+        });
+
+        modelBuilder.Entity<Reference>(entity =>
+        {
+            entity.HasKey(e => e.ReferenceId).HasName("PK__referenc__E1A99A7932C18402");
+
+            entity.ToTable("reference");
+
+            entity.Property(e => e.ReferenceId).HasColumnName("ReferenceID");
+            entity.Property(e => e.ApplicationId).HasColumnName("ApplicationID");
+            entity.Property(e => e.FormId).HasColumnName("FormID");
+
+            entity.HasOne(d => d.Application).WithMany(p => p.References)
+                .HasForeignKey(d => d.ApplicationId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__reference__Appli__7F2BE32F");
+
+            entity.HasOne(d => d.Form).WithMany(p => p.References)
+                .HasForeignKey(d => d.FormId)
+                .HasConstraintName("FK__reference__FormI__02FC7413");
         });
 
         OnModelCreatingPartial(modelBuilder);
