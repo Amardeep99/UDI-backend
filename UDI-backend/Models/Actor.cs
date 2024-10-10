@@ -15,5 +15,5 @@ public partial class Actor
 
     public string ContactName { get; set; } = null!;
 
-    public virtual ICollection<Process> Processes { get; set; } = new List<Process>();
+    public virtual ICollection<Form> Forms { get; set; } = new List<Form>();
 }
