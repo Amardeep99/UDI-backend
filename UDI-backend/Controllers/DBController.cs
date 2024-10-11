@@ -23,11 +23,11 @@ namespace UDI_backend.Controllers {
 		}
 
 		[HttpPost("referanse")]
-		public IActionResult CreateReference([FromQuery] int applicationID) {
+		public IActionResult CreateReference([FromQuery] int aID) {
 			try {
-				_db.CreateReference(applicationID);
+				_db.CreateReference(aID);
 			} catch (Exception ex) {
-				return StatusCode(500);
+				return StatusCode(500, ex.Message);
 			}
 
 			return Ok();
@@ -37,10 +37,11 @@ namespace UDI_backend.Controllers {
 		public IActionResult AddFormID([FromQuery] int formId, [FromQuery] int refId) {
 			try {
 				bool couldAdd = _db.AddFormIDToReference(refId, formId);
+
 				if (!couldAdd) return BadRequest("Reference ID does not exist");
 
 			} catch (Exception ex) {
-				return StatusCode(500);
+				return StatusCode(500, ex.Message);
 			}
 
 			return Ok();

@@ -2,6 +2,8 @@
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using System;
 using UDI_backend.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
 namespace UDI_backend.Database {
 	public class DatabaseContext {
 
@@ -19,24 +21,23 @@ namespace UDI_backend.Database {
 
 
 		public int CreateReference(int applicationID) {
+            Console.WriteLine(applicationID);
 			UdiMssqlDatabaseContext db = new();
-			Reference reference = new();
-			db.References.Add(reference);
-			db.SaveChanges();
+			Application? application = db.Applications.FirstOrDefault(a => a.ApplicationId == applicationID);
+
+			if (application == null ) throw new Exception("No application of this id");
+
+			Reference reference = new() { ApplicationId = applicationID, Application = application};
+			
+			try {
+				db.References.Add(reference);
+				db.SaveChanges();
+			} catch (DbUpdateException ex) {
+				Console.WriteLine(ex.Message);
+				throw;
+			}
 
 			return reference.ReferenceId;
-		}
-
-		public bool AddFormIDToReference(int referenceID, int formID) {
-			UdiMssqlDatabaseContext db = new();
-			Reference? reference = db.References.First(r => r.ReferenceId == referenceID);
-
-			if (reference == null) return false;
-
-			reference.FormId = formID;
-			db.SaveChanges();
-
-			return true;
 		}
 
 		public int CreateActor(int orgID, string orgName, string email, string phone, string contactName) {
@@ -59,8 +60,33 @@ namespace UDI_backend.Database {
 			return form.FormId;
 		}
 
+		public bool AddFormIDToReference(int referenceID, int formID) {
+			UdiMssqlDatabaseContext db = new();
+			Reference? reference = db.References.First(r => r.ReferenceId == referenceID);
 
-		private bool CheckIfApplicationValid(UdiMssqlDatabaseContext db, int dNumber, string travelDate) {
+			if (reference == null) return false;
+
+			reference.FormId = formID;
+			db.SaveChanges();
+
+			return true;
+		}
+
+		public bool AddFormIDToActor(int orgId, int formId) {
+			UdiMssqlDatabaseContext db = new();
+			Actor? actor = db.Actors.FirstOrDefault(a => a.OrganisationId == orgId);
+			Form? form = db.Forms.FirstOrDefault(f => f.FormId == formId);
+
+			if (form == null || actor == null) return false;
+
+			actor.FormId = formId;
+			db.SaveChanges();
+
+			return true;
+		}
+
+
+		public bool CheckIfApplicationValid(UdiMssqlDatabaseContext db, int dNumber, string travelDate) {
 			DateTime parsedDate = new();
 			try {
 				parsedDate = DateTime.Parse(travelDate);

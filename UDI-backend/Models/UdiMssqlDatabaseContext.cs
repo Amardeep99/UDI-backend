@@ -25,7 +25,7 @@ public partial class UdiMssqlDatabaseContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=tcp:amardeep-fatima-server.database.windows.net,1433;Initial Catalog=udi-mssql-database_2024-10-11T08-34Z;Persist Security Info=False;User ID=CloudSA35e670b3;Password=udierbest!123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+        => optionsBuilder.UseSqlServer("Server=tcp:amardeep-fatima-server.database.windows.net,1433;Initial Catalog=udi-mssql-database_2024-10-11T08-34Z;Persist Security Info=False;User ID=CloudSA35e670b3;Password=udierbest!123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -44,12 +44,17 @@ public partial class UdiMssqlDatabaseContext : DbContext
             entity.Property(e => e.Email)
                 .HasMaxLength(100)
                 .IsUnicode(false);
+            entity.Property(e => e.FormId).HasColumnName("FormID");
             entity.Property(e => e.OrganisationName)
                 .HasMaxLength(100)
                 .IsUnicode(false);
             entity.Property(e => e.Phone)
                 .HasMaxLength(20)
                 .IsUnicode(false);
+
+            entity.HasOne(d => d.Form).WithMany(p => p.Actors)
+                .HasForeignKey(d => d.FormId)
+                .HasConstraintName("FK_Actor_Form");
         });
 
         modelBuilder.Entity<Application>(entity =>
@@ -57,6 +62,8 @@ public partial class UdiMssqlDatabaseContext : DbContext
             entity.HasKey(e => e.ApplicationId).HasName("PK__Applicat__C93A4F79ADE7D38F");
 
             entity.ToTable("application");
+
+            entity.HasIndex(e => e.DNumber, "UQ_d_number").IsUnique();
 
             entity.Property(e => e.ApplicationId).HasColumnName("ApplicationID");
             entity.Property(e => e.DNumber).HasColumnName("D_number");
