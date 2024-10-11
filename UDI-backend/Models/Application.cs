@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace UDI_backend.Models;
+namespace UDI_backend.Models2;
 
 public partial class Application
 {

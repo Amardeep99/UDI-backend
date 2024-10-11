@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace UDI_backend.Models;
+namespace UDI_backend.Models2;
 
 public partial class UdiMssqlDatabaseContext : DbContext
 {
@@ -25,7 +25,7 @@ public partial class UdiMssqlDatabaseContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=tcp:amardeep-fatima-server.database.windows.net,1433;Initial Catalog=udi-mssql-database_2024-10-11T08-34Z;Persist Security Info=False;User ID=CloudSA35e670b3;Password=udierbest!123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+        => optionsBuilder.UseSqlServer("Server=tcp:amardeep-fatima-server.database.windows.net,1433;Initial Catalog=udi-mssql-database;Persist Security Info=False;User ID=CloudSA35e670b3;Password=udierbest!123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -69,6 +69,10 @@ public partial class UdiMssqlDatabaseContext : DbContext
 
             entity.ToTable("form");
 
+            entity.HasIndex(e => e.OrganisationId, "IX_form_OrganisationID");
+
+            entity.HasIndex(e => e.ReferenceId, "IX_form_ReferenceID");
+
             entity.Property(e => e.FormId).HasColumnName("FormID");
             entity.Property(e => e.ObjectionReason).HasColumnType("text");
             entity.Property(e => e.OrganisationId).HasColumnName("OrganisationID");
@@ -89,6 +93,10 @@ public partial class UdiMssqlDatabaseContext : DbContext
             entity.HasKey(e => e.ReferenceId).HasName("PK__referenc__E1A99A7932C18402");
 
             entity.ToTable("reference");
+
+            entity.HasIndex(e => e.ApplicationId, "IX_reference_ApplicationID");
+
+            entity.HasIndex(e => e.FormId, "IX_reference_FormID");
 
             entity.Property(e => e.ReferenceId).HasColumnName("ReferenceID");
             entity.Property(e => e.ApplicationId).HasColumnName("ApplicationID");
