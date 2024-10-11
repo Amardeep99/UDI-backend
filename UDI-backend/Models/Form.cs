@@ -17,6 +17,8 @@ public partial class Form
 
     public bool HasDebt { get; set; }
 
+    public virtual ICollection<Actor> Actors { get; set; } = new List<Actor>();
+
     public virtual Actor Organisation { get; set; } = null!;
 
     public virtual Reference? Reference { get; set; }

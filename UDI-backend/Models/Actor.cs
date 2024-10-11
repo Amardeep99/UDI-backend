@@ -15,5 +15,9 @@ public partial class Actor
 
     public string ContactName { get; set; } = null!;
 
+    public int? FormId { get; set; }
+
+    public virtual Form? Form { get; set; }
+
     public virtual ICollection<Form> Forms { get; set; } = new List<Form>();
 }
