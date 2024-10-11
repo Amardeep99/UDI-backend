@@ -27,17 +27,21 @@ namespace UDI_backend.Database {
 			return reference.ReferenceId;
 		}
 
+		public bool AddFormIDToReference(int referenceID, int formID) {
+			UdiMssqlDatabaseContext db = new();
+			Reference? reference = db.References.First(r => r.ReferenceId == referenceID);
+
+			if (reference == null) return false;
+
+			reference.FormId = formID;
+			db.SaveChanges();
+
+			return true;
+		}
+
 		public int CreateActor(int orgID, string orgName, string email, string phone, string contactName) {
 			UdiMssqlDatabaseContext db = new();
-			Actor actor = new()
-			{
-                OrganisationId = orgID,
-                OrganisationName = orgName,
-				Email = email,
-				Phone = phone,
-				ContactName = contactName
-			};
-			
+			Actor actor = new() { OrganisationId = orgID, OrganisationName = orgName, Email = email, Phone = phone, ContactName = contactName };
 			db.Actors.Add(actor);
 			db.SaveChanges();
 
@@ -54,7 +58,7 @@ namespace UDI_backend.Database {
 		}
 
 
-		public bool CheckIfApplicationValid(UdiMssqlDatabaseContext db, int dNumber, string travelDate) {
+		private bool CheckIfApplicationValid(UdiMssqlDatabaseContext db, int dNumber, string travelDate) {
 			DateTime parsedDate = new();
 			try {
 				parsedDate = DateTime.Parse(travelDate);
