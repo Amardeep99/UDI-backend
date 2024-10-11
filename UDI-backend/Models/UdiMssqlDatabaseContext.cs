@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace UDI_backend.Models2;
+namespace UDI_backend.Models;
 
 public partial class UdiMssqlDatabaseContext : DbContext
 {

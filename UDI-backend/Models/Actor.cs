@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace UDI_backend.Models2;
+namespace UDI_backend.Models;
 
 public partial class Actor
 {
