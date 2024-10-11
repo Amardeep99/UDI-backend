@@ -41,7 +41,9 @@ namespace UDI_backend.Database {
 
 		public int CreateActor(int orgID, string orgName, string email, string phone, string contactName) {
 			UdiMssqlDatabaseContext db = new();
-			Actor actor = new() { OrganisationId = orgID, OrganisationName = orgName, Email = email, Phone = phone, ContactName = contactName };
+			string spaceSeparatedName = contactName.Replace("-", " ");
+			
+			Actor actor = new() { OrganisationId = orgID, OrganisationName = orgName, Email = email, Phone = phone, ContactName = spaceSeparatedName };
 			db.Actors.Add(actor);
 			db.SaveChanges();
 
