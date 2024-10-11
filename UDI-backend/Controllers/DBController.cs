@@ -60,10 +60,11 @@ namespace UDI_backend.Controllers {
 		}
 
 		[HttpPost("aktor")]
-		public IActionResult CreateActor([FromQuery] string orgName, [FromQuery] string email,
+		public IActionResult CreateActor([FromQuery] int orgID,
+			[FromQuery] string orgName, [FromQuery] string email,
 			[FromQuery] string phone, [FromQuery] string contactName) {
 			try {
-				_db.CreateActor(orgName, email, phone, contactName);
+				_db.CreateActor(orgID, orgName, email, phone, contactName);
 			} catch (Exception ex) {
 				return StatusCode(500);
 			}
