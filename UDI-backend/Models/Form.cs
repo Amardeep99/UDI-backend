@@ -3,13 +3,10 @@ using System.Collections.Generic;
 
 namespace UDI_backend.Models;
 
-public partial class Form
-{
-    public int FormId { get; set; }
+public class Form {
+    public int Id { get; set; }
 
-    public int OrganisationId { get; set; }
-
-    public int? ReferenceId { get; set; }
+    public int ReferenceId { get; set; }
 
     public bool HasObjection { get; set; }
 
@@ -17,11 +14,16 @@ public partial class Form
 
     public bool HasDebt { get; set; }
 
-    public virtual ICollection<Actor> Actors { get; set; } = new List<Actor>();
+	public int OrganisationNr { get; set; }
 
-    public virtual Actor Organisation { get; set; } = null!;
+	public string OrganisationName { get; set; } = null!;
 
-    public virtual Reference? Reference { get; set; }
+	public string Email { get; set; } = null!;
 
-    public virtual ICollection<Reference> References { get; set; } = new List<Reference>();
+	public string Phone { get; set; } = null!;
+
+	public string ContactName { get; set; } = null!;
+
+    public virtual Reference Reference { get; set; } = null!;
+
 }

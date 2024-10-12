@@ -48,30 +48,17 @@ namespace UDI_backend.Controllers {
 		}
 
 		[HttpPost("skjema")]
-		public IActionResult CreateForm([FromQuery] int orgId, [FromQuery] int refId,
+		public IActionResult CreateForm([FromQuery] int orgNr, [FromQuery] int refId,
 			[FromQuery] bool hasObjection, [FromQuery] string objectionReason,
-			[FromQuery] bool hasDebt) {
+			[FromQuery] bool hasDebt, [FromQuery] string orgName, [FromQuery] string email,
+			[FromQuery] string phone, string cName) {
 			try {
-				_db.CreateForm(orgId, refId, hasObjection, objectionReason, hasDebt);
+				_db.CreateForm(orgNr, refId, hasObjection, objectionReason, hasDebt, orgName, email, phone, cName);
 			} catch (Exception ex) {
 				return StatusCode(500);
 			}
 
 			return Ok();
-		}
-
-		[HttpPost("aktor")]
-		public IActionResult CreateActor([FromQuery] int orgID,
-			[FromQuery] string orgName, [FromQuery] string email,
-			[FromQuery] string phone, [FromQuery] string contactName) {
-			try {
-				_db.CreateActor(orgID, orgName, email, phone, contactName);
-			} catch (Exception ex) {
-				return StatusCode(500);
-			}
-
-			return Ok();
-
 		}
 	}
 

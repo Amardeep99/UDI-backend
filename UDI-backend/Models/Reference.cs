@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 
 namespace UDI_backend.Models;
 
-public partial class Reference
-{
-    public int ReferenceId { get; set; }
+public class Reference {
+    public int Id { get; set; }
 
     public int ApplicationId { get; set; }
 
@@ -14,6 +14,4 @@ public partial class Reference
     public virtual Application Application { get; set; } = null!;
 
     public virtual Form? Form { get; set; }
-
-    public virtual ICollection<Form> Forms { get; set; } = new List<Form>();
 }

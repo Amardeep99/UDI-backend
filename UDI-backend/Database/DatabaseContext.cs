@@ -8,7 +8,7 @@ namespace UDI_backend.Database {
 	public class DatabaseContext {
 
 		public int CreateApplication(int dNumber, string travelDate) {
-			UdiMssqlDatabaseContext db = new();
+			UdiDatabase db = new();
 
 			CheckIfApplicationValid(db, dNumber, travelDate);
 
@@ -16,14 +16,14 @@ namespace UDI_backend.Database {
 			db.Applications.Add(application);
 			db.SaveChanges();
 
-			return application.ApplicationId;
+			return application.Id;
 		}
 
 
 		public int CreateReference(int applicationID) {
             Console.WriteLine(applicationID);
-			UdiMssqlDatabaseContext db = new();
-			Application? application = db.Applications.FirstOrDefault(a => a.ApplicationId == applicationID);
+			UdiDatabase db = new();
+			Application? application = db.Applications.FirstOrDefault(a => a.Id == applicationID);
 
 			if (application == null ) throw new Exception("No application of this id");
 
@@ -37,32 +37,24 @@ namespace UDI_backend.Database {
 				throw;
 			}
 
-			return reference.ReferenceId;
+			return reference.Id;
 		}
 
-		public int CreateActor(int orgID, string orgName, string email, string phone, string contactName) {
-			UdiMssqlDatabaseContext db = new();
-			string spaceSeparatedName = contactName.Replace("-", " ");
-			
-			Actor actor = new() { OrganisationId = orgID, OrganisationName = orgName, Email = email, Phone = phone, ContactName = spaceSeparatedName };
-			db.Actors.Add(actor);
-			db.SaveChanges();
+		public int CreateForm(int orgNr, int refId, bool hasObjection, string objectionReason, bool hasDebt,
+			string orgName, string email, string phone, string contactName) {
+			UdiDatabase db = new();
+			Form form = new() { ReferenceId = refId, HasObjection = hasObjection, ObjectionReason = objectionReason, HasDebt = hasDebt, 
+				OrganisationNr = orgNr, OrganisationName = orgName, Email = email, Phone = phone, ContactName = contactName };
 
-			return actor.OrganisationId;
-		}
-
-		public int CreateForm(int orgId, int refId, bool hasObjection, string objectionReason, bool hasDebt) {
-			UdiMssqlDatabaseContext db = new();
-			Form form = new() { OrganisationId = orgId, ReferenceId = refId, HasObjection = hasObjection, ObjectionReason = objectionReason, HasDebt = hasDebt };
 			db.Forms.Add(form);
 			db.SaveChanges();
 
-			return form.FormId;
+			return form.Id;
 		}
 
 		public bool AddFormIDToReference(int referenceID, int formID) {
-			UdiMssqlDatabaseContext db = new();
-			Reference? reference = db.References.First(r => r.ReferenceId == referenceID);
+			UdiDatabase db = new();
+			Reference? reference = db.References.First(r => r.Id == referenceID);
 
 			if (reference == null) return false;
 
@@ -72,21 +64,7 @@ namespace UDI_backend.Database {
 			return true;
 		}
 
-		public bool AddFormIDToActor(int orgId, int formId) {
-			UdiMssqlDatabaseContext db = new();
-			Actor? actor = db.Actors.FirstOrDefault(a => a.OrganisationId == orgId);
-			Form? form = db.Forms.FirstOrDefault(f => f.FormId == formId);
-
-			if (form == null || actor == null) return false;
-
-			actor.FormId = formId;
-			db.SaveChanges();
-
-			return true;
-		}
-
-
-		public bool CheckIfApplicationValid(UdiMssqlDatabaseContext db, int dNumber, string travelDate) {
+		public bool CheckIfApplicationValid(UdiDatabase db, int dNumber, string travelDate) {
 			DateTime parsedDate = new();
 			try {
 				parsedDate = DateTime.Parse(travelDate);
