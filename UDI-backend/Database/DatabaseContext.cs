@@ -53,8 +53,8 @@ namespace UDI_backend.Database {
 				OrganisationNr = orgNr, OrganisationName = orgName, Email = email, Phone = phone, ContactName = contactName };
 
 			db.Forms.Add(form);
-			SetFormIDToReference(form.ReferenceId, form.Id);
 			db.SaveChanges();
+			SetFormIDToReference(form.ReferenceId, form.Id);
 
 			return form.Id;
 		}
