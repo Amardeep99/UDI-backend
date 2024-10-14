@@ -13,7 +13,7 @@ namespace UDI_backend.Controllers {
 			_db = db;
 		}
 
-		[HttpGet("soknad/{id}")]
+		[HttpGet("referanse/{id}")]
 		public IActionResult ReferenceExists(int id) {
 			try {
 				bool exists = _db.ReferenceExists(id);

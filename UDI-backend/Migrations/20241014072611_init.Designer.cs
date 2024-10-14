@@ -12,8 +12,8 @@ using UDI_backend.Models;
 namespace UDI_backend.Migrations
 {
     [DbContext(typeof(UdiDatabase))]
-    [Migration("20241011211410_initial")]
-    partial class initial
+    [Migration("20241014072611_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
