@@ -3,6 +3,8 @@ using UDI_backend.Database;
 namespace UDI_backend {
 	public class Program {
 		public static void Main(string[] args) {
+			//Start 
+
 			var builder = WebApplication.CreateBuilder(args);
 			// Add services to the container.
 
