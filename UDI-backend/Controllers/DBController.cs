@@ -75,7 +75,11 @@ namespace UDI_backend.Controllers {
 				return Ok(id);
 
 
-			} catch (Exception ex) {
+			} catch (KeyNotFoundException keyex) {
+				return BadRequest(keyex.Message);
+			}
+			
+			catch (Exception ex) {
 				return StatusCode(500);
 			}
 

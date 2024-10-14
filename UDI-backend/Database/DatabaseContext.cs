@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting.Server;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-using System;
-using UDI_backend.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
+﻿using UDI_backend.Models;
 using Microsoft.EntityFrameworkCore;
 namespace UDI_backend.Database {
 	public class DatabaseContext {
@@ -51,6 +47,11 @@ namespace UDI_backend.Database {
 		public int CreateForm(int orgNr, int refId, bool hasObjection, string objectionReason, bool hasDebt,
 			string orgName, string email, string phone, string contactName) {
 			UdiDatabase db = new();
+
+			if (!ReferenceExists(refId)) throw new KeyNotFoundException("No such reference exists");
+
+
+
 			Form form = new() { ReferenceId = refId, HasObjection = hasObjection, ObjectionReason = objectionReason, HasDebt = hasDebt, 
 				OrganisationNr = orgNr, OrganisationName = orgName, Email = email, Phone = phone, ContactName = contactName };
 
