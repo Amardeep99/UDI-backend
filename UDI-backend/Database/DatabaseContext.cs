@@ -7,6 +7,12 @@ using Microsoft.EntityFrameworkCore;
 namespace UDI_backend.Database {
 	public class DatabaseContext {
 
+		public bool ReferenceExists(int id) {
+			UdiDatabase db = new UdiDatabase();
+
+			return db.References.Any(r => r.Id == id);
+		}
+
 		public int CreateApplication(int dNumber, string travelDate) {
 			UdiDatabase db = new();
 
@@ -47,12 +53,13 @@ namespace UDI_backend.Database {
 				OrganisationNr = orgNr, OrganisationName = orgName, Email = email, Phone = phone, ContactName = contactName };
 
 			db.Forms.Add(form);
+			SetFormIDToReference(form.ReferenceId, form.Id);
 			db.SaveChanges();
 
 			return form.Id;
 		}
 
-		public bool AddFormIDToReference(int referenceID, int formID) {
+		public bool SetFormIDToReference(int referenceID, int formID) {
 			UdiDatabase db = new();
 			Reference? reference = db.References.First(r => r.Id == referenceID);
 
