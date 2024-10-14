@@ -1,5 +1,6 @@
 ﻿using UDI_backend.Models;
 using Microsoft.EntityFrameworkCore;
+using UDI_backend.Exceptions;
 namespace UDI_backend.Database {
 	public class DatabaseContext {
 
@@ -7,6 +8,12 @@ namespace UDI_backend.Database {
 			UdiDatabase db = new UdiDatabase();
 
 			return db.References.Any(r => r.Id == id);
+		}
+
+		public bool ReferenceHasFormId(int id) {
+			UdiDatabase db = new UdiDatabase();
+
+			return db.References.FirstOrDefault(r => r.Id == id)?.FormId != null;
 		}
 
 		public int CreateApplication(int dNumber, string travelDate) {
@@ -49,7 +56,7 @@ namespace UDI_backend.Database {
 			UdiDatabase db = new();
 
 			if (!ReferenceExists(refId)) throw new KeyNotFoundException("No such reference exists");
-
+			if (ReferenceHasFormId(refId)) throw new ReferenceAlreadyHasFormIdException();
 
 
 			Form form = new() { ReferenceId = refId, HasObjection = hasObjection, ObjectionReason = objectionReason, HasDebt = hasDebt, 

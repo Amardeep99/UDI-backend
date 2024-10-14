@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using UDI_backend.Contracts;
 using UDI_backend.Database;
+using UDI_backend.Exceptions;
 using UDI_backend.Models;
 
 namespace UDI_backend.Controllers {
@@ -75,10 +76,13 @@ namespace UDI_backend.Controllers {
 				return Ok(id);
 
 
-			} catch (KeyNotFoundException keyex) {
+			} 
+			catch (KeyNotFoundException keyex) {
 				return BadRequest(keyex.Message);
+			} 
+			catch (ReferenceAlreadyHasFormIdException refex) {
+				return BadRequest(refex.Message);
 			}
-			
 			catch (Exception ex) {
 				return StatusCode(500);
 			}
