@@ -32,7 +32,10 @@ namespace UDI_backend.Controllers {
 				int id = _db.CreateApplication(application.DNumber, application.TravelDate);
 				return Ok(id);
 
-			} catch (Exception ex) {
+			} catch (InvalidDataException dataex) {
+				return BadRequest(dataex.Message);
+			} 
+			catch (Exception ex) {
 				return StatusCode(500);
 			}
 
@@ -45,33 +48,18 @@ namespace UDI_backend.Controllers {
 				int id = _db.CreateReference(aID);
 				return Ok(id);
 
-			} catch (Exception ex) {
+			} catch(KeyNotFoundException keyex) {
+				return NotFound(keyex.Message);
+			}
+			catch (Exception ex) {
 				return StatusCode(500, ex.Message);
 			}
 		}
 
-		// **** Denne kan kanskje fjernes, siden det å sette FormID til Reference kan ordnes fra _db.CreateForm() ****
-		//[HttpPut("referanse")]
-		//public IActionResult SetFormIDToReference([FromBody] SetFormIDToReferenceRequest request) {
-		//	if (request == null) return BadRequest();
-
-		//	try {
-		//		bool couldAdd = _db.SetFormIDToReference(request.ReferenceID, request.FormID);
-
-		//		if (!couldAdd) return BadRequest("Reference ID does not exist");
-
-		//		return Ok();
-
-		//	} catch (Exception ex) {
-		//		return StatusCode(500, ex.Message);
-		//	}
-
-		//}
-
 		[HttpPost("skjema")]
 		public IActionResult CreateForm([FromBody] CreateFormRequest form) {
 
-			if (form == null) return BadRequest();
+			if (form == null) return BadRequest("Request body incorrectly formated");
 
 			try {
 				int id = _db.CreateForm(
