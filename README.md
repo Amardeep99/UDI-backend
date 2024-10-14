@@ -19,6 +19,16 @@ All endpoints are prefixed with `/api/v1`.
   - 200 OK: Returns a boolean indicating whether the reference exists.
   - 500 Internal Server Error: If an unexpected error occurs.
 
+**Example Request:**
+```
+GET /api/v1/referanse/12345
+```
+
+**Example Response:**
+```json
+true
+```
+
 ### 2. Create Application
 
 - **URL:** `/soknad`
@@ -36,6 +46,22 @@ All endpoints are prefixed with `/api/v1`.
   - 400 Bad Request: If the request body is null or invalid.
   - 500 Internal Server Error: If an unexpected error occurs.
 
+**Example Request:**
+```http
+POST /api/v1/soknad
+Content-Type: application/json
+
+{
+  "DNumber": "12345678901",
+  "TravelDate": "2024-05-15"
+}
+```
+
+**Example Response:**
+```json
+67890
+```
+
 ### 3. Create Reference
 
 - **URL:** `/referanse/{aID}`
@@ -46,6 +72,16 @@ All endpoints are prefixed with `/api/v1`.
 - **Responses:**
   - 200 OK: Returns the ID of the created reference.
   - 500 Internal Server Error: If an unexpected error occurs.
+
+**Example Request:**
+```
+POST /api/v1/referanse/67890
+```
+
+**Example Response:**
+```json
+54321
+```
 
 ### 4. Create Form
 
@@ -71,10 +107,41 @@ All endpoints are prefixed with `/api/v1`.
   - 400 Bad Request: If the request body is null or invalid.
   - 500 Internal Server Error: If an unexpected error occurs.
 
+**Example Request:**
+```http
+POST /api/v1/skjema
+Content-Type: application/json
+
+{
+  "OrganisationNr": "123456789",
+  "ReferenceId": 54321,
+  "HasObjection": false,
+  "ObjectionReason": "",
+  "HasDebt": false,
+  "OrganisationName": "Example Company AS",
+  "Email": "contact@example.com",
+  "Phone": "+4712345678",
+  "ContactName": "John Doe"
+}
+```
+
+**Example Response:**
+```json
+98765
+```
+
 ## Error Handling
 
 All endpoints return a 500 Internal Server Error status code if an unexpected exception occurs during processing. The specific error message is not returned to the client for security reasons.
 
+**Example Error Response:**
+```http
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json
+
+{
+  "error": "An unexpected error occurred"
+}
+```
+
 ## Notes
-
-
