@@ -16,7 +16,9 @@ namespace UDI_backend.Database {
 		public int CreateApplication(int dNumber, string travelDate) {
 			UdiDatabase db = new();
 
-			CheckIfApplicationValid(db, dNumber, travelDate);
+			bool isValid = CheckIfApplicationValid(db, dNumber, travelDate);
+
+			if(!isValid) throw new InvalidDataException("Data does not have valid format");
 
 			Application application = new() { DNumber = dNumber, TravelDate = DateTime.Parse(travelDate) };
 			db.Applications.Add(application);
@@ -31,7 +33,7 @@ namespace UDI_backend.Database {
 			UdiDatabase db = new();
 			Application? application = db.Applications.FirstOrDefault(a => a.Id == applicationID);
 
-			if (application == null ) throw new Exception("No application of this id");
+			if (application == null ) throw new KeyNotFoundException("No application of this id");
 
 			Reference reference = new() { ApplicationId = applicationID, Application = application};
 			
@@ -61,9 +63,8 @@ namespace UDI_backend.Database {
 
 		public bool SetFormIDToReference(int referenceID, int formID) {
 			UdiDatabase db = new();
-			Reference? reference = db.References.First(r => r.Id == referenceID);
+			Reference reference = db.References.First(r => r.Id == referenceID);
 
-			if (reference == null) return false;
 
 			reference.FormId = formID;
 			db.SaveChanges();
