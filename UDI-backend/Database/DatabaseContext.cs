@@ -16,6 +16,20 @@ namespace UDI_backend.Database {
 			return db.References.FirstOrDefault(r => r.Id == id)?.FormId != null;
 		}
 
+		public Form? GetForm(int formId) {
+			UdiDatabase db = new();
+			Form? form = db.Forms.FirstOrDefault(f => f.Id == formId);
+
+			if (form == null) throw new KeyNotFoundException("No form with this Id");
+
+			return form;	
+		}
+
+		public int? FormIdOfReferenceOrNull(int id) {
+			UdiDatabase db = new();
+			return db.References.FirstOrDefault(r => r.Id == id)?.FormId;
+		}
+
 		public int CreateApplication(int dNumber, string travelDate) {
 			UdiDatabase db = new();
 
