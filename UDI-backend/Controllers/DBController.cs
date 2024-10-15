@@ -15,13 +15,26 @@ namespace UDI_backend.Controllers {
 		}
 
 		[HttpGet("referanse/{id}")]
-		public IActionResult ReferenceExists(int id) {
+		public IActionResult GetReference(int id) {
 			try {
-				bool exists = _db.ReferenceExists(id);
-				return Ok(exists);
+				bool refExists = _db.ReferenceExists(id);
+				int? formId = _db.FormIdOfReferenceOrNull(id);
+
+				var data = new { ReferenceExists = refExists, FormID = formId};
+				return Ok(data);
 
 			} catch (Exception ex) {
 				return StatusCode(500);
+			}
+		}
+
+		[HttpGet("skjema/{formId}")]
+		public IActionResult GetForm(int formId) {
+			try {
+				Form form = _db.GetForm(formId)!;
+				return Ok(form);	
+			} catch (KeyNotFoundException keyex) {
+				return NotFound(keyex.Message);
 			}
 		}
 
