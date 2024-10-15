@@ -10,7 +10,7 @@ namespace UDI_backend {
 			builder.Services.AddControllers();
 
 			builder.Services.AddDbContextFactory<UdiDatabase>(options =>
-				options.UseSqlServer(Environment.GetEnvironmentVariable("SQLCONNSTR_DB_CONNECTION_STRING")));
+				options.UseSqlServer(builder.Configuration.GetConnectionString("DB_CONNECTION_STRING")));
 
 			builder.Services.AddScoped<DatabaseContext>();
 
