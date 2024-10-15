@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using UDI_backend.Exceptions;
 namespace UDI_backend.Database {
 	public class DatabaseContext {
-
 		public bool ReferenceExists(int id) {
 			UdiDatabase db = new UdiDatabase();
 
