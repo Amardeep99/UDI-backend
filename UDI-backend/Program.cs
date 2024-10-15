@@ -1,4 +1,6 @@
+using Microsoft.EntityFrameworkCore;
 using UDI_backend.Database;
+using UDI_backend.Models;
 
 namespace UDI_backend {
 	public class Program {
@@ -7,9 +9,14 @@ namespace UDI_backend {
 
 			var builder = WebApplication.CreateBuilder(args);
 			// Add services to the container.
+			var connectionString = builder.Configuration.GetConnectionString("UdiDatabase");
+
+			builder.Services.AddDbContext<UdiDatabase>(options =>
+				options.UseSqlServer(connectionString).UseLowerCaseNamingConvention());
+
+			builder.Services.AddScoped<DatabaseContext>();
 
 			builder.Services.AddControllers();
-			builder.Services.AddSingleton(new DatabaseContext());
 			var app = builder.Build();
 
 			// Configure the HTTP request pipeline.
