@@ -52,7 +52,7 @@ GET /api/v1/skjema/67890
 ```json
 {
   "id": 67890,
-  "organisationNr": "123456789",
+  "organisationNr": 123456789,
   "referenceId": 54321,
   "hasObjection": false,
   "objectionReason": "",
@@ -72,7 +72,7 @@ GET /api/v1/skjema/67890
 - **Request Body:**
   ```json
   {
-    "DNumber": "string",
+    "DNumber": number,
     "TravelDate": "string (ISO 8601 date format)"
   }
   ```
@@ -87,7 +87,7 @@ POST /api/v1/soknad
 Content-Type: application/json
 
 {
-  "DNumber": "12345678901",
+  "DNumber": 12345678901,
   "TravelDate": "2024-05-15"
 }
 ```
@@ -127,9 +127,9 @@ POST /api/v1/referanse/67890
 - **Request Body:**
   ```json
   {
-    "OrganisationNr": "string",
-    "ReferenceId": "integer",
-    "HasObjection": "boolean",
+    "OrganisationNr": number,
+    "ReferenceId": number,
+    "HasObjection": boolean,
     "ObjectionReason": "string",
     "HasDebt": "boolean",
     "OrganisationName": "string",
@@ -149,7 +149,7 @@ POST /api/v1/skjema
 Content-Type: application/json
 
 {
-  "OrganisationNr": "123456789",
+  "OrganisationNr": 123456789,
   "ReferenceId": 54321,
   "HasObjection": false,
   "ObjectionReason": "",
