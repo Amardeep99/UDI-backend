@@ -1,28 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace UDI_backend.Models;
 
 public class UdiDatabase : DbContext {
+	private readonly IConfiguration _configuration;
 
 	public DbSet<Application> Applications => Set<Application>();
 	public DbSet<Form> Forms => Set<Form>();
 	public DbSet<Reference> References => Set<Reference>();
 
+	public UdiDatabase(IConfiguration configuration) {
+		_configuration = configuration;
+	}
+
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
-		optionsBuilder.UseSqlServer("Server=tcp:amardeep-fatima-server.database.windows.net,1433;Initial Catalog=udi-mssql-database;Persist Security Info=False;User ID=CloudSA35e670b3;Password=udierbest!123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;")
+		string connectionString = Environment.GetEnvironmentVariable("SQLCONNSTR_DB_CONNECTION_STRING");
+
+		if (string.IsNullOrEmpty(connectionString)) {
+			throw new InvalidOperationException("Database connection string is not set in the environment variables.");
+		}
+
+		optionsBuilder.UseSqlServer(connectionString)
 			.UseLowerCaseNamingConvention();
 	}
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder) {
 		modelBuilder.Entity<Reference>()
-			.HasOne(r => r.Form)          
-			.WithOne(f => f.Reference)      
-			.HasForeignKey<Form>(f => f.ReferenceId);  
+			.HasOne(r => r.Form)
+			.WithOne(f => f.Reference)
+			.HasForeignKey<Form>(f => f.ReferenceId);
 
 		modelBuilder.Entity<Reference>()
 			.Property(r => r.FormId)
-			.IsRequired(false);  
+			.IsRequired(false);
 	}
 }
