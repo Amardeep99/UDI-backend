@@ -17,14 +17,7 @@ public class UdiDatabase : DbContext {
 	}
 
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
-		string connectionString = Environment.GetEnvironmentVariable("SQLCONNSTR_DB_CONNECTION_STRING");
-
-		if (string.IsNullOrEmpty(connectionString)) {
-			throw new InvalidOperationException("Database connection string is not set in the environment variables.");
-		}
-
-		optionsBuilder.UseSqlServer(connectionString)
-			.UseLowerCaseNamingConvention();
+		// Blir konfigurert i Program
 	}
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder) {
