@@ -8,15 +8,15 @@ All endpoints are prefixed with `/api/v1`.
 
 ## Endpoints
 
-### 1. Check if Reference Exists
+### 1. Get Reference
 
 - **URL:** `/referanse/{id}`
 - **Method:** GET
-- **Description:** Checks if a reference with the given ID exists.
+- **Description:** Retrieves information about a reference with the given ID.
 - **Parameters:**
-  - `id` (path parameter): The ID of the reference to check.
+  - `id` (path parameter): The ID of the reference to retrieve.
 - **Responses:**
-  - 200 OK: Returns a boolean indicating whether the reference exists.
+  - 200 OK: Returns a JSON object with reference information.
   - 500 Internal Server Error: If an unexpected error occurs.
 
 **Example Request:**
@@ -26,10 +26,45 @@ GET /api/v1/referanse/12345
 
 **Example Response:**
 ```json
-true
+{
+  "ReferenceExists": true,
+  "FormID": 67890
+}
 ```
 
-### 2. Create Application
+### 2. Get Form
+
+- **URL:** `/skjema/{formId}`
+- **Method:** GET
+- **Description:** Retrieves a form with the given ID.
+- **Parameters:**
+  - `formId` (path parameter): The ID of the form to retrieve.
+- **Responses:**
+  - 200 OK: Returns the Form object.
+  - 404 Not Found: If the form with the given ID doesn't exist.
+
+**Example Request:**
+```
+GET /api/v1/skjema/67890
+```
+
+**Example Response:**
+```json
+{
+  "id": 67890,
+  "organisationNr": "123456789",
+  "referenceId": 54321,
+  "hasObjection": false,
+  "objectionReason": "",
+  "hasDebt": false,
+  "organisationName": "Example Company AS",
+  "email": "contact@example.com",
+  "phone": "+4712345678",
+  "contactName": "John Doe"
+}
+```
+
+### 3. Create Application
 
 - **URL:** `/soknad`
 - **Method:** POST
@@ -62,7 +97,7 @@ Content-Type: application/json
 67890
 ```
 
-### 3. Create Reference
+### 4. Create Reference
 
 - **URL:** `/referanse/{aID}`
 - **Method:** POST
@@ -71,6 +106,7 @@ Content-Type: application/json
   - `aID` (path parameter): The ID of the application to create a reference for.
 - **Responses:**
   - 200 OK: Returns the ID of the created reference.
+  - 404 Not Found: If the application with the given ID doesn't exist.
   - 500 Internal Server Error: If an unexpected error occurs.
 
 **Example Request:**
@@ -83,7 +119,7 @@ POST /api/v1/referanse/67890
 54321
 ```
 
-### 4. Create Form
+### 5. Create Form
 
 - **URL:** `/skjema`
 - **Method:** POST
@@ -104,7 +140,7 @@ POST /api/v1/referanse/67890
   ```
 - **Responses:**
   - 200 OK: Returns the ID of the created form.
-  - 400 Bad Request: If the request body is null or invalid.
+  - 400 Bad Request: If the request body is null, invalid, or if the reference already has a form ID.
   - 500 Internal Server Error: If an unexpected error occurs.
 
 **Example Request:**
@@ -132,16 +168,17 @@ Content-Type: application/json
 
 ## Error Handling
 
-All endpoints return a 500 Internal Server Error status code if an unexpected exception occurs during processing. The specific error message is not returned to the client for security reasons.
+- All endpoints return a 500 Internal Server Error status code if an unexpected exception occurs during processing.
+- Specific error messages are returned for 400 Bad Request and 404 Not Found responses.
+- The CreateApplication endpoint may return a 400 Bad Request with a specific error message for invalid data.
+- The CreateForm endpoint may return a 400 Bad Request if the reference already has a form ID.
 
 **Example Error Response:**
 ```http
-HTTP/1.1 500 Internal Server Error
+HTTP/1.1 400 Bad Request
 Content-Type: application/json
 
 {
-  "error": "An unexpected error occurred"
+  "error": "Reference already has a form ID"
 }
 ```
-
-## Notes
