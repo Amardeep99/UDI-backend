@@ -4,20 +4,31 @@ using UDI_backend.Exceptions;
 namespace UDI_backend.Database {
 	public class DatabaseContext {
 
+		private readonly IConfiguration _configuration;
+
+		public DatabaseContext(IConfiguration configuration) {
+			_configuration = configuration;
+		}
+
+		private UdiDatabase CreateDbContext() {
+			return new UdiDatabase(_configuration);
+		}
+
 		public bool ReferenceExists(int id) {
-			UdiDatabase db = new UdiDatabase();
+			UdiDatabase db = CreateDbContext();
+
 
 			return db.References.Any(r => r.Id == id);
 		}
 
 		public bool ReferenceHasFormId(int id) {
-			UdiDatabase db = new UdiDatabase();
+			UdiDatabase db = CreateDbContext();
 
 			return db.References.FirstOrDefault(r => r.Id == id)?.FormId != null;
 		}
 
 		public Form? GetForm(int formId) {
-			UdiDatabase db = new();
+			UdiDatabase db = CreateDbContext();
 			Form? form = db.Forms.FirstOrDefault(f => f.Id == formId);
 
 			if (form == null) throw new KeyNotFoundException("No form with this Id");
@@ -26,12 +37,12 @@ namespace UDI_backend.Database {
 		}
 
 		public int? FormIdOfReferenceOrNull(int id) {
-			UdiDatabase db = new();
+			UdiDatabase db = CreateDbContext();
 			return db.References.FirstOrDefault(r => r.Id == id)?.FormId;
 		}
 
 		public int CreateApplication(int dNumber, string travelDate) {
-			UdiDatabase db = new();
+			UdiDatabase db = CreateDbContext();
 
 			bool isValid = CheckIfApplicationValid(db, dNumber, travelDate);
 
@@ -47,7 +58,7 @@ namespace UDI_backend.Database {
 
 		public int CreateReference(int applicationID) {
             Console.WriteLine(applicationID);
-			UdiDatabase db = new();
+			UdiDatabase db = CreateDbContext();
 			Application? application = db.Applications.FirstOrDefault(a => a.Id == applicationID);
 
 			if (application == null ) throw new KeyNotFoundException("No application of this id");
@@ -67,7 +78,7 @@ namespace UDI_backend.Database {
 
 		public int CreateForm(int orgNr, int refId, bool hasObjection, string objectionReason, bool hasDebt,
 			string orgName, string email, string phone, string contactName) {
-			UdiDatabase db = new();
+			UdiDatabase db = CreateDbContext();
 
 			if (!ReferenceExists(refId)) throw new KeyNotFoundException("No such reference exists");
 			if (ReferenceHasFormId(refId)) throw new ReferenceAlreadyHasFormIdException();
@@ -84,7 +95,7 @@ namespace UDI_backend.Database {
 		}
 
 		public bool SetFormIDToReference(int referenceID, int formID) {
-			UdiDatabase db = new();
+			UdiDatabase db = CreateDbContext();
 			Reference reference = db.References.First(r => r.Id == referenceID);
 
 
