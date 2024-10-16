@@ -101,6 +101,17 @@ namespace UDI_backend.Controllers {
 			}
 
 		}
+
+		[HttpPut("skjema/{id}")]
+		public IActionResult EditForm([FromBody] EditFormRequest form) {
+			if (form == null) return BadRequest("Request body incorrectly formated");
+
+			try {
+
+			}
+
+		}
+
 	}
 
 }
