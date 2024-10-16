@@ -14,16 +14,21 @@ namespace UDI_backend.Controllers {
 			_db = db;
 		}
 
-		[HttpGet("referanse/{id}")]
-		public IActionResult GetReference(int id) {
+		[HttpGet("referanse/{refid}")]
+		public IActionResult GetReference(int refId) {
 			try {
-				bool refExists = _db.ReferenceExists(id);
-				int? formId = _db.FormIdOfReferenceOrNull(id);
+				bool refExists = _db.ReferenceExists(refId);
+				int? formId = _db.FormIdOfReferenceOrNull(refId);
+				DateTime? travelDateTime = _db.GetTravelDate(refId);
+				DateOnly? travelDate = travelDateTime.HasValue ? DateOnly.FromDateTime(travelDateTime.Value) : (DateOnly?)null;
 
-				var data = new { ReferenceExists = refExists, FormID = formId};
+				var data = new { ReferenceExists = refExists, FormID = formId, TravelDate = travelDate};
 				return Ok(data);
 
-			} catch (Exception) {
+			} catch (KeyNotFoundException keyex) {
+				return BadRequest(keyex.Message);
+			}
+			catch (Exception) {
 				return StatusCode(500);
 			}
 		}
