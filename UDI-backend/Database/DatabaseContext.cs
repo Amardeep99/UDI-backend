@@ -24,6 +24,18 @@ namespace UDI_backend.Database {
 			return form;	
 		}
 
+		public DateTime? GetTravelDate(int refId) {
+			DateTime? travelDate = _db.References
+										.Include(r => r.Application)
+										.Where(r => r.Id == refId)
+										.Select(r => r.Application.TravelDate)
+										.FirstOrDefault();
+
+			if (travelDate == null) throw new KeyNotFoundException("Reference has no application");
+
+			return travelDate;
+		}
+
 		public int? FormIdOfReferenceOrNull(int id) {
 			return _db.References.FirstOrDefault(r => r.Id == id)?.FormId;
 		}
@@ -43,7 +55,6 @@ namespace UDI_backend.Database {
 
 
 		public int CreateReference(int applicationID) {
-            Console.WriteLine(applicationID);
 			Application? application = _db.Applications.FirstOrDefault(a => a.Id == applicationID);
 
 			if (application == null ) throw new KeyNotFoundException("No application of this id");
@@ -53,8 +64,7 @@ namespace UDI_backend.Database {
 			try {
 				_db.References.Add(reference);
 				_db.SaveChanges();
-			} catch (DbUpdateException ex) {
-				Console.WriteLine(ex.Message);
+			} catch (DbUpdateException) {
 				throw;
 			}
 
@@ -112,8 +122,7 @@ namespace UDI_backend.Database {
 			DateTime parsedDate = new();
 			try {
 				parsedDate = DateTime.Parse(travelDate);
-			} catch (Exception ex) {
-				Console.WriteLine("Could not parse string to date");
+			} catch (Exception) {
 				return false;
 			}
 
