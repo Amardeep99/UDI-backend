@@ -1,6 +1,5 @@
 ﻿namespace UDI_backend.Contracts {
 	public class EditFormRequest {
-		public int Id { get; set; }
 		public bool HasObjection { get; set; }
 
 		public string ObjectionReason { get; set; } = "";

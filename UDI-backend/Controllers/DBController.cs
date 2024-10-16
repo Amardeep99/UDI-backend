@@ -23,7 +23,7 @@ namespace UDI_backend.Controllers {
 				var data = new { ReferenceExists = refExists, FormID = formId};
 				return Ok(data);
 
-			} catch (Exception ex) {
+			} catch (Exception) {
 				return StatusCode(500);
 			}
 		}
@@ -49,7 +49,7 @@ namespace UDI_backend.Controllers {
 			} catch (InvalidDataException dataex) {
 				return BadRequest(dataex.Message);
 			} 
-			catch (Exception ex) {
+			catch (Exception) {
 				return StatusCode(500);
 			}
 
@@ -65,8 +65,8 @@ namespace UDI_backend.Controllers {
 			} catch(KeyNotFoundException keyex) {
 				return NotFound(keyex.Message);
 			}
-			catch (Exception ex) {
-				return StatusCode(500, ex.Message);
+			catch (Exception) {
+				return StatusCode(500);
 			}
 		}
 
@@ -96,22 +96,36 @@ namespace UDI_backend.Controllers {
 			catch (ReferenceAlreadyHasFormIdException refex) {
 				return BadRequest(refex.Message);
 			}
-			catch (Exception ex) {
+			catch (Exception) {
 				return StatusCode(500);
 			}
 
 		}
 
 		[HttpPut("skjema/{id}")]
-		public IActionResult EditForm([FromBody] EditFormRequest form) {
+		public IActionResult EditForm(int id, [FromBody] EditFormRequest form) {
 			if (form == null) return BadRequest("Request body incorrectly formated");
 
 			try {
+				_db.EditForm(
+					id,
+					form.OrganisationNr,
+					form.HasObjection,
+					form.ObjectionReason,
+					form.HasDebt,
+					form.OrganisationName,
+					form.Email,
+					form.Phone,
+					form.ContactName);
+				return Ok();
 
+			} catch (KeyNotFoundException keyex) {
+				return BadRequest(keyex.Message);
+			} catch (Exception) {
+				return StatusCode(500);
 			}
 
 		}
 
 	}
-
 }
