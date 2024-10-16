@@ -10,19 +10,16 @@ namespace UDI_backend.Database {
 			_db = db;
 		}
 		public bool ReferenceExists(int id) {
-
 			return _db.References.Any(r => r.Id == id);
 		}
 
 		public bool ReferenceHasFormId(int id) {
-
 			return _db.References.FirstOrDefault(r => r.Id == id)?.FormId != null;
 		}
 
 		public Form? GetForm(int formId) {
 			Form? form = _db.Forms.FirstOrDefault(f => f.Id == formId);
-
-			if (form == null) throw new KeyNotFoundException("No form with this Id");
+			if (form == null) throw new KeyNotFoundException("No form with this id");
 
 			return form;	
 		}
