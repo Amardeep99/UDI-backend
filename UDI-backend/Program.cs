@@ -21,11 +21,11 @@ namespace UDI_backend {
 
 			// Network settings
 			builder.Services.AddCors(options => {
-				options.AddPolicy("AllowSpecificOrigin",
-					builder => builder.WithOrigins("http://localhost:5173")
+				options.AddPolicy("AllowAnyOrigin",
+					builder => builder
+						.AllowAnyOrigin()
 						.AllowAnyMethod()
-						.AllowAnyHeader()
-						.AllowCredentials());
+						.AllowAnyHeader());
 			});
 
 			var app = builder.Build();
@@ -33,6 +33,7 @@ namespace UDI_backend {
 			// Configure the HTTP request pipeline.
 
 			// app.UseHttpsRedirection();
+			app.UseCors("AllowAnyOrigin");
 
 			app.MapControllers();
 
