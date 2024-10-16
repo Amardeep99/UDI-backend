@@ -8,6 +8,7 @@ namespace UDI_backend {
 			//Start 
 
 			var builder = WebApplication.CreateBuilder(args);
+
 			// Add services to the container.
 			var connectionString = builder.Configuration.GetConnectionString("UdiDatabase");
 
@@ -17,6 +18,16 @@ namespace UDI_backend {
 			builder.Services.AddScoped<DatabaseContext>();
 
 			builder.Services.AddControllers();
+
+			// Network settings
+			builder.Services.AddCors(options => {
+				options.AddPolicy("AllowSpecificOrigin",
+					builder => builder.WithOrigins("http://localhost:5173")
+						.AllowAnyMethod()
+						.AllowAnyHeader()
+						.AllowCredentials());
+			});
+
 			var app = builder.Build();
 
 			// Configure the HTTP request pipeline.
