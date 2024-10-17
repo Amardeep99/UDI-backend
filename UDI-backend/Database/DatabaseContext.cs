@@ -14,7 +14,7 @@ namespace UDI_backend.Database {
 		}
 
 		public Reference GetReference(int id) { 
-			Reference? reference = _db.References.FirstOrDefault(r => r.Id == id);
+			Reference? reference = _db.References.Include(r => r.Application).FirstOrDefault(r => r.Id == id);
 			if (reference == null) throw new KeyNotFoundException("No reference with that id");
 
 			return reference;

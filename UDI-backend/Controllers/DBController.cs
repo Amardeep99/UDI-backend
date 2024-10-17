@@ -23,9 +23,10 @@ namespace UDI_backend.Controllers {
 
 				var data = new {
 					ReferenceExists = reference != null,
-					reference?.FormId, 
+					reference?.FormId,
 					travelDate,
-					reference?.OrganisationNr
+					reference?.OrganisationNr,
+					reference?.Application.Name
 				};
 
 				return Ok(data);
