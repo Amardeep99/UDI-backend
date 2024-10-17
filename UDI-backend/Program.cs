@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using UDI_backend.Clients;
 using UDI_backend.Database;
 using UDI_backend.Models;
 
@@ -18,6 +19,8 @@ namespace UDI_backend {
 			builder.Services.AddScoped<DatabaseContext>();
 
 			builder.Services.AddControllers();
+
+			builder.Services.AddHttpClient<BronnoysundsRegClient>();
 
 			// Network settings
 			builder.Services.AddCors(options => {

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using UDI_backend.Clients;
 using UDI_backend.Contracts;
 using UDI_backend.Database;
 using UDI_backend.Exceptions;
@@ -10,30 +11,34 @@ namespace UDI_backend.Controllers {
 	[Route("api/v1")]
 	public class DBController : ControllerBase {
 		private readonly DatabaseContext _db;
-		public DBController(DatabaseContext db) {
+		private readonly BronnoysundsRegClient _client;
+		public DBController(DatabaseContext db, BronnoysundsRegClient client) {
 			_db = db;
+			_client = client;
 		}
 
 		[HttpGet("referanse/{refid}")]
-		public IActionResult GetReference(int refId) {
+		public async Task<IActionResult> GetReference(int refId) {
 			try {
 				Reference? reference = _db.GetReference(refId);
 				DateTime? travelDateTime = _db.GetTravelDate(refId);
 				DateOnly? travelDate = travelDateTime.HasValue ? DateOnly.FromDateTime(travelDateTime.Value) : (DateOnly?)null;
+				string name = await _client.GetOrganisationDetails(reference.OrganisationNr) ?? "";
 
 				var data = new {
 					ReferenceExists = reference != null,
 					reference?.FormId,
 					travelDate,
 					reference?.OrganisationNr,
-					reference?.Application.Name
+					reference?.Application.Name,
+					OrganisationName = name,
 				};
 
 				return Ok(data);
 
 			} catch (KeyNotFoundException keyex) {
 				return BadRequest(keyex.Message);
-			}
+			} 
 			catch (Exception) {
 				return StatusCode(500);
 			}
@@ -67,7 +72,6 @@ namespace UDI_backend.Controllers {
 			
 		}
 
-		// TODO: Create CreateReferenceRequest
 		[HttpPost("referanse")]
 		public IActionResult CreateReference([FromBody] CreateReferenceRequest request) {
 			if (request == null) return BadRequest("Bad request body");
