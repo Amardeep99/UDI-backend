@@ -17,12 +17,18 @@ namespace UDI_backend.Controllers {
 		[HttpGet("referanse/{refid}")]
 		public IActionResult GetReference(int refId) {
 			try {
-				bool refExists = _db.ReferenceExists(refId);
-				int? formId = _db.FormIdOfReferenceOrNull(refId);
+				Reference? reference = _db.GetReference(refId);
 				DateTime? travelDateTime = _db.GetTravelDate(refId);
 				DateOnly? travelDate = travelDateTime.HasValue ? DateOnly.FromDateTime(travelDateTime.Value) : (DateOnly?)null;
 
-				var data = new { ReferenceExists = refExists, FormID = formId, TravelDate = travelDate};
+				var data = new {
+					ReferenceExists = reference != null,
+					reference?.FormId,
+					travelDate,
+					reference?.OrganisationNr,
+					reference?.Application.Name
+				};
+
 				return Ok(data);
 
 			} catch (KeyNotFoundException keyex) {
@@ -48,7 +54,7 @@ namespace UDI_backend.Controllers {
 			if (application == null) return BadRequest();
 			 
 			try {
-				int id = _db.CreateApplication(application.DNumber, application.TravelDate);
+				int id = _db.CreateApplication(application.DNumber, application.TravelDate, application.Name);
 				return Ok(id);
 
 			} catch (InvalidDataException dataex) {
@@ -61,10 +67,13 @@ namespace UDI_backend.Controllers {
 			
 		}
 
-		[HttpPost("referanse/{aID}")]
-		public IActionResult CreateReference(int aID) {
+		// TODO: Create CreateReferenceRequest
+		[HttpPost("referanse")]
+		public IActionResult CreateReference([FromBody] CreateReferenceRequest request) {
+			if (request == null) return BadRequest("Bad request body");
+
 			try {
-				int id = _db.CreateReference(aID);
+				int id = _db.CreateReference(request.ApplicationId, request.OrganisationNr);
 				return Ok(id);
 
 			} catch(KeyNotFoundException keyex) {
@@ -82,12 +91,10 @@ namespace UDI_backend.Controllers {
 
 			try {
 				int id = _db.CreateForm(
-								form.OrganisationNr, 
 								form.ReferenceId, 
 								form.HasObjection, 
 								form.ObjectionReason, 
 								form.HasDebt, 
-								form.OrganisationName, 
 								form.Email, 
 								form.Phone, 
 								form.ContactName);
@@ -114,11 +121,9 @@ namespace UDI_backend.Controllers {
 			try {
 				_db.EditForm(
 					id,
-					form.OrganisationNr,
 					form.HasObjection,
 					form.ObjectionReason,
 					form.HasDebt,
-					form.OrganisationName,
 					form.Email,
 					form.Phone,
 					form.ContactName);

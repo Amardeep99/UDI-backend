@@ -13,6 +13,13 @@ namespace UDI_backend.Database {
 			return _db.References.Any(r => r.Id == id);
 		}
 
+		public Reference GetReference(int id) { 
+			Reference? reference = _db.References.Include(r => r.Application).FirstOrDefault(r => r.Id == id);
+			if (reference == null) throw new KeyNotFoundException("No reference with that id");
+
+			return reference;
+		}
+
 		public bool ReferenceHasFormId(int id) {
 			return _db.References.FirstOrDefault(r => r.Id == id)?.FormId != null;
 		}
@@ -40,13 +47,13 @@ namespace UDI_backend.Database {
 			return _db.References.FirstOrDefault(r => r.Id == id)?.FormId;
 		}
 
-		public int CreateApplication(int dNumber, string travelDate) {
+		public int CreateApplication(int dNumber, string travelDate, string name) {
 
 			bool isValid = CheckIfApplicationValid(_db, dNumber, travelDate);
 
 			if(!isValid) throw new InvalidDataException("Data does not have valid format");
 
-			Application application = new() { DNumber = dNumber, TravelDate = DateTime.Parse(travelDate) };
+			Application application = new() { DNumber = dNumber, TravelDate = DateTime.Parse(travelDate), Name = name };
 			_db.Applications.Add(application);
 			_db.SaveChanges();
 
@@ -54,12 +61,12 @@ namespace UDI_backend.Database {
 		}
 
 
-		public int CreateReference(int applicationID) {
+		public int CreateReference(int applicationID, int orgNr) {
 			Application? application = _db.Applications.FirstOrDefault(a => a.Id == applicationID);
 
 			if (application == null ) throw new KeyNotFoundException("No application of this id");
 
-			Reference reference = new() { ApplicationId = applicationID, Application = application};
+			Reference reference = new() { ApplicationId = applicationID, Application = application, OrganisationNr = orgNr};
 			
 			try {
 				_db.References.Add(reference);
@@ -71,15 +78,15 @@ namespace UDI_backend.Database {
 			return reference.Id;
 		}
 
-		public int CreateForm(int orgNr, int refId, bool hasObjection, string objectionReason, 
-			bool hasDebt, string orgName, string email, string phone, string contactName) {
+		public int CreateForm(int refId, bool hasObjection, string objectionReason, 
+			bool hasDebt, string email, string phone, string contactName) {
 
 			if (!ReferenceExists(refId)) throw new KeyNotFoundException("No such reference exists");
 			if (ReferenceHasFormId(refId)) throw new ReferenceAlreadyHasFormIdException();
 
 
 			Form form = new() { ReferenceId = refId, HasObjection = hasObjection, ObjectionReason = objectionReason, HasDebt = hasDebt, 
-				OrganisationNr = orgNr, OrganisationName = orgName, Email = email, Phone = phone, ContactName = contactName };
+									Email = email, Phone = phone, ContactName = contactName };
 
 			_db.Forms.Add(form);
 			_db.SaveChanges();
@@ -88,18 +95,16 @@ namespace UDI_backend.Database {
 			return form.Id;
 		}
 
-		public void EditForm(int id, int orgNr, bool hasObjection, string objectionReason,
-			bool hasDebt, string orgName, string email, string phone, string contactName) {
+		public void EditForm(int id, bool hasObjection, string objectionReason,
+			bool hasDebt, string email, string phone, string contactName) {
 
 			Form? form = _db.Forms.FirstOrDefault(f => f.Id == id);
 
 			if (form == null) throw new KeyNotFoundException("No form with this id");
 			
-			form.OrganisationNr = orgNr; 
 			form.HasObjection = hasObjection;
 			form.ObjectionReason = objectionReason;	
 			form.HasDebt = hasDebt;
-			form.OrganisationName = orgName;
 			form.Email = email;
 			form.Phone = phone;
 			form.ContactName = contactName;
