@@ -47,13 +47,13 @@ namespace UDI_backend.Database {
 			return _db.References.FirstOrDefault(r => r.Id == id)?.FormId;
 		}
 
-		public int CreateApplication(int dNumber, string travelDate) {
+		public int CreateApplication(int dNumber, string travelDate, string name) {
 
 			bool isValid = CheckIfApplicationValid(_db, dNumber, travelDate);
 
 			if(!isValid) throw new InvalidDataException("Data does not have valid format");
 
-			Application application = new() { DNumber = dNumber, TravelDate = DateTime.Parse(travelDate) };
+			Application application = new() { DNumber = dNumber, TravelDate = DateTime.Parse(travelDate), Name = name };
 			_db.Applications.Add(application);
 			_db.SaveChanges();
 

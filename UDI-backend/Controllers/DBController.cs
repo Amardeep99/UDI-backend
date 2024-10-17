@@ -53,7 +53,7 @@ namespace UDI_backend.Controllers {
 			if (application == null) return BadRequest();
 			 
 			try {
-				int id = _db.CreateApplication(application.DNumber, application.TravelDate);
+				int id = _db.CreateApplication(application.DNumber, application.TravelDate, application.Name);
 				return Ok(id);
 
 			} catch (InvalidDataException dataex) {
