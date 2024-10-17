@@ -17,12 +17,17 @@ namespace UDI_backend.Controllers {
 		[HttpGet("referanse/{refid}")]
 		public IActionResult GetReference(int refId) {
 			try {
-				bool refExists = _db.ReferenceExists(refId);
-				int? formId = _db.FormIdOfReferenceOrNull(refId);
+				Reference? reference = _db.GetReference(refId);
 				DateTime? travelDateTime = _db.GetTravelDate(refId);
 				DateOnly? travelDate = travelDateTime.HasValue ? DateOnly.FromDateTime(travelDateTime.Value) : (DateOnly?)null;
 
-				var data = new { ReferenceExists = refExists, FormID = formId, TravelDate = travelDate};
+				var data = new {
+					ReferenceExists = reference != null,
+					reference?.FormId, 
+					travelDate,
+					reference?.OrganisationNr
+				};
+
 				return Ok(data);
 
 			} catch (KeyNotFoundException keyex) {

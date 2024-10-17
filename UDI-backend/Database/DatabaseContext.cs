@@ -13,6 +13,13 @@ namespace UDI_backend.Database {
 			return _db.References.Any(r => r.Id == id);
 		}
 
+		public Reference GetReference(int id) { 
+			Reference? reference = _db.References.FirstOrDefault(r => r.Id == id);
+			if (reference == null) throw new KeyNotFoundException("No reference with that id");
+
+			return reference;
+		}
+
 		public bool ReferenceHasFormId(int id) {
 			return _db.References.FirstOrDefault(r => r.Id == id)?.FormId != null;
 		}

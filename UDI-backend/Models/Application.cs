@@ -6,6 +6,8 @@ namespace UDI_backend.Models;
 public class Application {
     public int Id { get; set; }
 
+    public string Name { get; set; } = null!;
+
     public int DNumber { get; set; }
 
     public DateTime TravelDate { get; set; }
