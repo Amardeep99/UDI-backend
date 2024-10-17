@@ -23,14 +23,14 @@ namespace UDI_backend.Controllers {
 				Reference? reference = _db.GetReference(refId);
 				DateTime? travelDateTime = _db.GetTravelDate(refId);
 				DateOnly? travelDate = travelDateTime.HasValue ? DateOnly.FromDateTime(travelDateTime.Value) : (DateOnly?)null;
-				string name = await _client.GetOrganisationDetails(reference.OrganisationNr) ?? "";
+				string name = await _client.GetOrganisationDetails(reference.OrganisationNr) ?? "Ukjent organisasjon";
 
 				var data = new {
 					ReferenceExists = reference != null,
 					reference?.FormId,
 					travelDate,
 					reference?.OrganisationNr,
-					reference?.Application.Name,
+					ApplicantName = reference?.Application.Name,
 					OrganisationName = name,
 				};
 

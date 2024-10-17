@@ -1,4 +1,5 @@
-﻿using UDI_backend.Clients.Models;
+﻿using System.Globalization;
+using UDI_backend.Clients.Models;
 
 namespace UDI_backend.Clients {
 	public class BronnoysundsRegClient {
@@ -15,7 +16,7 @@ namespace UDI_backend.Clients {
 
 			OrganisationDetails? org = await respone.Content.ReadFromJsonAsync<OrganisationDetails>();
 
-			return org?.Navn;
+			return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(org?.Navn.ToLower() ?? "");
 		}
 	}
 }
