@@ -61,10 +61,13 @@ namespace UDI_backend.Controllers {
 			
 		}
 
-		[HttpPost("referanse/{aID}")]
-		public IActionResult CreateReference(int aID) {
+		// TODO: Create CreateReferenceRequest
+		[HttpPost("referanse")]
+		public IActionResult CreateReference([FromBody] CreateReferenceRequest request) {
+			if (request == null) return BadRequest("Bad request body");
+
 			try {
-				int id = _db.CreateReference(aID);
+				int id = _db.CreateReference(request.ApplicationId, request.OrganisationNr);
 				return Ok(id);
 
 			} catch(KeyNotFoundException keyex) {
@@ -82,12 +85,10 @@ namespace UDI_backend.Controllers {
 
 			try {
 				int id = _db.CreateForm(
-								form.OrganisationNr, 
 								form.ReferenceId, 
 								form.HasObjection, 
 								form.ObjectionReason, 
 								form.HasDebt, 
-								form.OrganisationName, 
 								form.Email, 
 								form.Phone, 
 								form.ContactName);
@@ -114,11 +115,9 @@ namespace UDI_backend.Controllers {
 			try {
 				_db.EditForm(
 					id,
-					form.OrganisationNr,
 					form.HasObjection,
 					form.ObjectionReason,
 					form.HasDebt,
-					form.OrganisationName,
 					form.Email,
 					form.Phone,
 					form.ContactName);

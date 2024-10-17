@@ -54,12 +54,12 @@ namespace UDI_backend.Database {
 		}
 
 
-		public int CreateReference(int applicationID) {
+		public int CreateReference(int applicationID, int orgNr) {
 			Application? application = _db.Applications.FirstOrDefault(a => a.Id == applicationID);
 
 			if (application == null ) throw new KeyNotFoundException("No application of this id");
 
-			Reference reference = new() { ApplicationId = applicationID, Application = application};
+			Reference reference = new() { ApplicationId = applicationID, Application = application, OrganisationNr = orgNr};
 			
 			try {
 				_db.References.Add(reference);
@@ -71,15 +71,15 @@ namespace UDI_backend.Database {
 			return reference.Id;
 		}
 
-		public int CreateForm(int orgNr, int refId, bool hasObjection, string objectionReason, 
-			bool hasDebt, string orgName, string email, string phone, string contactName) {
+		public int CreateForm(int refId, bool hasObjection, string objectionReason, 
+			bool hasDebt, string email, string phone, string contactName) {
 
 			if (!ReferenceExists(refId)) throw new KeyNotFoundException("No such reference exists");
 			if (ReferenceHasFormId(refId)) throw new ReferenceAlreadyHasFormIdException();
 
 
 			Form form = new() { ReferenceId = refId, HasObjection = hasObjection, ObjectionReason = objectionReason, HasDebt = hasDebt, 
-				OrganisationNr = orgNr, OrganisationName = orgName, Email = email, Phone = phone, ContactName = contactName };
+									Email = email, Phone = phone, ContactName = contactName };
 
 			_db.Forms.Add(form);
 			_db.SaveChanges();
@@ -88,18 +88,16 @@ namespace UDI_backend.Database {
 			return form.Id;
 		}
 
-		public void EditForm(int id, int orgNr, bool hasObjection, string objectionReason,
-			bool hasDebt, string orgName, string email, string phone, string contactName) {
+		public void EditForm(int id, bool hasObjection, string objectionReason,
+			bool hasDebt, string email, string phone, string contactName) {
 
 			Form? form = _db.Forms.FirstOrDefault(f => f.Id == id);
 
 			if (form == null) throw new KeyNotFoundException("No form with this id");
 			
-			form.OrganisationNr = orgNr; 
 			form.HasObjection = hasObjection;
 			form.ObjectionReason = objectionReason;	
 			form.HasDebt = hasDebt;
-			form.OrganisationName = orgName;
 			form.Email = email;
 			form.Phone = phone;
 			form.ContactName = contactName;
