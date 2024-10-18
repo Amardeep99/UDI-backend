@@ -32,7 +32,6 @@ The service exposes the following API endpoints:
 - `POST /api/v1/skjema`: Create a new form
 - `PUT /api/v1/skjema/{id}`: Edit an existing form
 
-
 ### Get Reference Details
 
 - **URL**: `/referanse/{refid}`
@@ -41,7 +40,13 @@ The service exposes the following API endpoints:
   - `refid` (integer, required): The reference ID
 - **Success Response**: 
   - Code: 200
-  - Content: JSON object containing reference details
+  - Content: JSON object containing reference details including:
+    - ReferenceExists (boolean)
+    - FormId (integer, nullable)
+    - TravelDate (string, nullable, format: "YYYY-MM-DD")
+    - OrganisationNr (integer)
+    - ApplicantName (string)
+    - OrganisationName (string)
 
 ### Get Form Details
 
@@ -156,12 +161,37 @@ Rate limiting is not implemented in the current version.
 
 ## Examples
 
+### Getting Reference Details
+
+Request:
+```http
+GET /api/v1/referanse/1234 HTTP/1.1
+Host: udi.azurewebsites.net
+```
+
+Response:
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "ReferenceExists": true,
+  "FormId": 5678,
+  "TravelDate": "2023-07-15",
+  "OrganisationNr": 987654321,
+  "ApplicantName": "John Doe",
+  "OrganisationName": "Example Organization AS"
+}
+```
+
+This response provides details about the reference with ID 1234, including associated form, travel date, organization details, and applicant name.
+
 ### Creating an Application
 
 Request:
 ```http
 POST /api/v1/soknad HTTP/1.1
-Host: api.udi.no
+Host: udi.azurewebsites.net
 Content-Type: application/json
 
 {
