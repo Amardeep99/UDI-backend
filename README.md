@@ -1,184 +1,212 @@
-# API Endpoint Documentation
+# UDI Backend API Documentation
 
-This document describes the endpoints for the UDI (Norwegian Directorate of Immigration) backend API.
+Welcome to the documentation for the UDI (Norwegian Directorate of Immigration) Backend API. This API allows you to interact with the UDI application system, managing applications, references, and forms related to immigration processes.
 
-## Base URL
+## Table of Contents
 
-All endpoints are prefixed with `/api/v1`.
+1. [Introduction](#introduction)
+2. [Authentication](#authentication)
+3. [API Endpoints](#api-endpoints)
+4. [Request/Response Formats](#request-response-formats)
+5. [Error Handling](#error-handling)
+6. [Rate Limiting](#rate-limiting)
+7. [Examples](#examples)
 
-## Endpoints
+## Introduction
 
-### 1. Get Reference
+The UDI Backend API is a RESTful service that provides endpoints for creating and managing immigration applications, references, and forms. It uses JSON for request and response bodies.
 
-- **URL:** `/referanse/{id}`
-- **Method:** GET
-- **Description:** Retrieves information about a reference with the given ID.
-- **Parameters:**
-  - `id` (path parameter): The ID of the reference to retrieve.
-- **Responses:**
-  - 200 OK: Returns a JSON object with reference information.
-  - 500 Internal Server Error: If an unexpected error occurs.
+Base URL: `https://udi.azurewebsites.net/api/v1/`
 
-**Example Request:**
-```
-GET /api/v1/referanse/12345
-```
+## Authentication
+None yet.
 
-**Example Response:**
+## API Endpoints
+
+The service exposes the following API endpoints:
+
+- `GET /api/v1/referanse/{refid}`: Get reference details
+- `GET /api/v1/skjema/{formId}`: Get form details
+- `POST /api/v1/soknad`: Create a new application
+- `POST /api/v1/referanse`: Create a new reference
+- `POST /api/v1/skjema`: Create a new form
+- `PUT /api/v1/skjema/{id}`: Edit an existing form
+
+### Get Reference Details
+
+- **URL**: `/referanse/{refid}`
+- **Method**: GET
+- **URL Params**: 
+  - `refid` (integer, required): The reference ID
+- **Success Response**: 
+  - Code: 200
+  - Content: JSON object containing reference details including:
+    - ReferenceExists (boolean)
+    - FormId (integer, nullable)
+    - TravelDate (string, nullable, format: "YYYY-MM-DD")
+    - OrganisationNr (integer)
+    - ApplicantName (string)
+    - OrganisationName (string)
+
+### Get Form Details
+
+- **URL**: `/skjema/{formId}`
+- **Method**: GET
+- **URL Params**:
+  - `formId` (integer, required): The form ID
+- **Success Response**:
+  - Code: 200
+  - Content: JSON object containing form details
+
+### Create Application
+
+- **URL**: `/soknad`
+- **Method**: POST
+- **Data Params**: JSON object (see [CreateApplicationRequest](#createapplicationrequest))
+- **Success Response**:
+  - Code: 200
+  - Content: Integer (application ID)
+
+### Create Reference
+
+- **URL**: `/referanse`
+- **Method**: POST
+- **Data Params**: JSON object (see [CreateReferenceRequest](#createreferencerequest))
+- **Success Response**:
+  - Code: 200
+  - Content: Integer (reference ID)
+
+### Create Form
+
+- **URL**: `/skjema`
+- **Method**: POST
+- **Data Params**: JSON object (see [CreateFormRequest](#createformrequest))
+- **Success Response**:
+  - Code: 200
+  - Content: Integer (form ID)
+
+### Edit Form
+
+- **URL**: `/skjema/{id}`
+- **Method**: PUT
+- **URL Params**:
+  - `id` (integer, required): The form ID
+- **Data Params**: JSON object (see [EditFormRequest](#editformrequest))
+- **Success Response**:
+  - Code: 200
+  - Content: None
+
+## Request/Response Formats
+
+### CreateApplicationRequest
+
 ```json
 {
-  "ReferenceExists": true,
-  "FormID": 67890
+  "DNumber": 12345678,
+  "TravelDate": "2023-07-15",
+  "Name": "John Doe"
 }
 ```
 
-### 2. Get Form
+### CreateReferenceRequest
 
-- **URL:** `/skjema/{formId}`
-- **Method:** GET
-- **Description:** Retrieves a form with the given ID.
-- **Parameters:**
-  - `formId` (path parameter): The ID of the form to retrieve.
-- **Responses:**
-  - 200 OK: Returns the Form object.
-  - 404 Not Found: If the form with the given ID doesn't exist.
-
-**Example Request:**
-```
-GET /api/v1/skjema/67890
-```
-
-**Example Response:**
 ```json
 {
-  "id": 67890,
-  "organisationNr": 123456789,
-  "referenceId": 54321,
-  "hasObjection": false,
-  "objectionReason": "",
-  "hasDebt": false,
-  "organisationName": "Example Company AS",
-  "email": "contact@example.com",
-  "phone": "+4712345678",
-  "contactName": "John Doe"
+  "ApplicationId": 1234,
+  "OrganisationNr": 987654321
 }
 ```
 
-### 3. Create Application
+### CreateFormRequest
 
-- **URL:** `/soknad`
-- **Method:** POST
-- **Description:** Creates a new application.
-- **Request Body:**
-  ```json
-  {
-    "DNumber": number,
-    "TravelDate": "string (ISO 8601 date format)"
-  }
-  ```
-- **Responses:**
-  - 200 OK: Returns the ID of the created application.
-  - 400 Bad Request: If the request body is null or invalid.
-  - 500 Internal Server Error: If an unexpected error occurs.
-
-**Example Request:**
-```http
-POST /api/v1/soknad
-Content-Type: application/json
-
-{
-  "DNumber": 12345678901,
-  "TravelDate": "2024-05-15"
-}
-```
-
-**Example Response:**
 ```json
-67890
-```
-
-### 4. Create Reference
-
-- **URL:** `/referanse/{aID}`
-- **Method:** POST
-- **Description:** Creates a new reference for an application.
-- **Parameters:**
-  - `aID` (path parameter): The ID of the application to create a reference for.
-- **Responses:**
-  - 200 OK: Returns the ID of the created reference.
-  - 404 Not Found: If the application with the given ID doesn't exist.
-  - 500 Internal Server Error: If an unexpected error occurs.
-
-**Example Request:**
-```
-POST /api/v1/referanse/67890
-```
-
-**Example Response:**
-```json
-54321
-```
-
-### 5. Create Form
-
-- **URL:** `/skjema`
-- **Method:** POST
-- **Description:** Creates a new form.
-- **Request Body:**
-  ```json
-  {
-    "OrganisationNr": number,
-    "ReferenceId": number,
-    "HasObjection": boolean,
-    "ObjectionReason": "string",
-    "HasDebt": "boolean",
-    "OrganisationName": "string",
-    "Email": "string",
-    "Phone": "string",
-    "ContactName": "string"
-  }
-  ```
-- **Responses:**
-  - 200 OK: Returns the ID of the created form.
-  - 400 Bad Request: If the request body is null, invalid, or if the reference already has a form ID.
-  - 500 Internal Server Error: If an unexpected error occurs.
-
-**Example Request:**
-```http
-POST /api/v1/skjema
-Content-Type: application/json
-
 {
-  "OrganisationNr": 123456789,
-  "ReferenceId": 54321,
+  "ReferenceId": 5678,
   "HasObjection": false,
   "ObjectionReason": "",
   "HasDebt": false,
-  "OrganisationName": "Example Company AS",
-  "Email": "contact@example.com",
+  "Email": "john.doe@example.com",
   "Phone": "+4712345678",
   "ContactName": "John Doe"
 }
 ```
 
-**Example Response:**
+### EditFormRequest
+
 ```json
-98765
+{
+  "HasObjection": true,
+  "ObjectionReason": "Reason for objection",
+  "HasDebt": false,
+  "Email": "john.doe@example.com",
+  "Phone": "+4712345678",
+  "ContactName": "John Doe"
+}
 ```
 
 ## Error Handling
 
-- All endpoints return a 500 Internal Server Error status code if an unexpected exception occurs during processing.
-- Specific error messages are returned for 400 Bad Request and 404 Not Found responses.
-- The CreateApplication endpoint may return a 400 Bad Request with a specific error message for invalid data.
-- The CreateForm endpoint may return a 400 Bad Request if the reference already has a form ID.
+The API uses standard HTTP response codes to indicate the success or failure of requests:
 
-**Example Error Response:**
+- 200: OK - The request was successful
+- 400: Bad Request - The request was invalid or cannot be served
+- 404: Not Found - The requested resource does not exist
+- 500: Internal Server Error - The server encountered an unexpected condition
+
+Error responses will include a message providing more details about the error.
+
+## Rate Limiting
+
+Rate limiting is not implemented in the current version.
+
+## Examples
+
+### Getting Reference Details
+
+Request:
 ```http
-HTTP/1.1 400 Bad Request
+GET /api/v1/referanse/1234 HTTP/1.1
+Host: udi.azurewebsites.net
+```
+
+Response:
+```http
+HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  "error": "Reference already has a form ID"
+  "ReferenceExists": true,
+  "FormId": 5678,
+  "TravelDate": "2023-07-15",
+  "OrganisationNr": 987654321,
+  "ApplicantName": "John Doe",
+  "OrganisationName": "Example Organization AS"
 }
 ```
+
+This response provides details about the reference with ID 1234, including associated form, travel date, organization details, and applicant name.
+
+### Creating an Application
+
+Request:
+```http
+POST /api/v1/soknad HTTP/1.1
+Host: udi.azurewebsites.net
+Content-Type: application/json
+
+{
+  "DNumber": 12345678,
+  "TravelDate": "2023-07-15",
+  "Name": "John Doe"
+}
+```
+
+Response:
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+1234
+```
+
+This response indicates that an application was successfully created with ID 1234.
