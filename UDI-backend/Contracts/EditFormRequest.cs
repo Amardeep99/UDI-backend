@@ -2,6 +2,8 @@
 	public class EditFormRequest {
 		public bool HasObjection { get; set; }
 
+		public string? SuggestedTravelDate { get; set; }
+
 		public bool HasDebt { get; set; }
 
 		public string Email { get; set; } = null!;

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UDI_backend.Models;
 
@@ -11,9 +12,11 @@ using UDI_backend.Models;
 namespace UDI_backend.Migrations
 {
     [DbContext(typeof(UdiDatabase))]
-    partial class UdiDatabaseModelSnapshot : ModelSnapshot
+    [Migration("20241023145811_refactorSuggestedDate")]
+    partial class refactorSuggestedDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

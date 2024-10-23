@@ -10,7 +10,7 @@ public class Form {
 
     public bool HasObjection { get; set; }
 
-    public DateTime? SuggestedTravelDate { get; set; }
+    public DateOnly? SuggestedTravelDate { get; set; }
 
     public bool HasDebt { get; set; }
 

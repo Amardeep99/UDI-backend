@@ -60,17 +60,17 @@ namespace UDI_backend.Tests {
 		}
 
 		[Theory]
-		[InlineData(1000001, "2023-11-15", "Test Person 1", 2000001, true, false, "test1@example.com", "1234567890", "John Doe")]
-		[InlineData(1000002, "2023-12-01", "Test Person 2", 2000002, false, true, "test2@example.com", "0987654321", "Jane Smith")]
+		[InlineData(1000001, "2023-11-15", "Test Person 1", 2000001, true, "2025-10-01", false, "test1@example.com", "1234567890", "John Doe")]
+		[InlineData(1000002, "2023-12-01", "Test Person 2", 2000002, false, "2025-12-15", true, "test2@example.com", "0987654321", "Jane Smith")]
 		public void CreateForm_ValidData_ReturnsFormId(int dNumber, string travelDate, string name, int orgNr,
-													   bool hasObjection, bool hasDebt,
+													   bool hasObjection, string? suggestedTravelDate, bool hasDebt,
 													   string email, string phone, string contactName) {
 			// Arrange
 			int applicationId = _databaseContext.CreateApplication(dNumber, travelDate, name);
 			int referenceId = _databaseContext.CreateReference(applicationId, orgNr);
 
 			// Act
-			int formId = _databaseContext.CreateForm(referenceId, hasObjection, hasDebt, email, phone, contactName);
+			int formId = _databaseContext.CreateForm(referenceId, hasObjection, suggestedTravelDate, hasDebt, email, phone, contactName);
 
 			// Assert
 			Assert.True(formId > 0);
@@ -85,20 +85,20 @@ namespace UDI_backend.Tests {
 		}
 
 		[Theory]
-		[InlineData(1000001, "2023-11-15", "Test Person 1", 2000001, true, false, "initial@example.com", "1234567890", "John Doe",
-					false, true, "updated@example.com", "0987654321", "Jane Smith")]
+		[InlineData(1000001, "2025-01-01", "Test Person 1", 2000001, true, null, false, "initial@example.com", "1234567890", "John Doe",
+					false, "2025-02-02", true, "updated@example.com", "0987654321", "Jane Smith")]
 		public void EditForm_ValidData_UpdatesForm(int dNumber, string travelDate, string name, int orgNr,
-												   bool initialHasObjection, bool initialHasDebt,
+												   bool initialHasObjection, string? intialSuggestedTravelDate, bool initialHasDebt,
 												   string initialEmail, string initialPhone, string initialContactName,
-												   bool newHasObjection, bool newHasDebt,
+												   bool newHasObjection, string? newSuggestedTravelDate, bool newHasDebt,
 												   string newEmail, string newPhone, string newContactName) {
 			// Arrange
 			int applicationId = _databaseContext.CreateApplication(dNumber, travelDate, name);
 			int referenceId = _databaseContext.CreateReference(applicationId, orgNr);
-			int formId = _databaseContext.CreateForm(referenceId, initialHasObjection, initialHasDebt, initialEmail, initialPhone, initialContactName);
+			int formId = _databaseContext.CreateForm(referenceId, initialHasObjection, intialSuggestedTravelDate, initialHasDebt, initialEmail, initialPhone, initialContactName);
 
 			// Act
-			_databaseContext.EditForm(formId, newHasObjection, newHasDebt, newEmail, newPhone, newContactName);
+			_databaseContext.EditForm(formId, newHasObjection, newSuggestedTravelDate,newHasDebt, newEmail, newPhone, newContactName);
 
 			// Assert
 			var updatedForm = _dbContext.Forms.FirstOrDefault(f => f.Id == formId);
