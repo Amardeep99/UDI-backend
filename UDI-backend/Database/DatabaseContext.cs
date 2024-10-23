@@ -78,14 +78,14 @@ namespace UDI_backend.Database {
 			return reference.Id;
 		}
 
-		public int CreateForm(int refId, bool hasObjection, string objectionReason, 
+		public int CreateForm(int refId, bool hasObjection, 
 			bool hasDebt, string email, string phone, string contactName) {
 
 			if (!ReferenceExists(refId)) throw new KeyNotFoundException("No such reference exists");
 			if (ReferenceHasFormId(refId)) throw new ReferenceAlreadyHasFormIdException();
 
 
-			Form form = new() { ReferenceId = refId, HasObjection = hasObjection, ObjectionReason = objectionReason, HasDebt = hasDebt, 
+			Form form = new() { ReferenceId = refId, HasObjection = hasObjection, HasDebt = hasDebt, 
 									Email = email, Phone = phone, ContactName = contactName };
 
 			_db.Forms.Add(form);
@@ -95,15 +95,14 @@ namespace UDI_backend.Database {
 			return form.Id;
 		}
 
-		public void EditForm(int id, bool hasObjection, string objectionReason,
+		public void EditForm(int id, bool hasObjection,
 			bool hasDebt, string email, string phone, string contactName) {
 
 			Form? form = _db.Forms.FirstOrDefault(f => f.Id == id);
 
 			if (form == null) throw new KeyNotFoundException("No form with this id");
 			
-			form.HasObjection = hasObjection;
-			form.ObjectionReason = objectionReason;	
+			form.HasObjection = hasObjection;	
 			form.HasDebt = hasDebt;
 			form.Email = email;
 			form.Phone = phone;

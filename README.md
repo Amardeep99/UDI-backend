@@ -19,7 +19,7 @@ The UDI Backend API is a RESTful service that provides endpoints for creating an
 Base URL: `https://udi.azurewebsites.net/api/v1/`
 
 ## Authentication
-None yet.
+Authentication is not handled in the backend of the solution. 
 
 ## API Endpoints
 

@@ -97,7 +97,6 @@ namespace UDI_backend.Controllers {
 				int id = _db.CreateForm(
 								form.ReferenceId, 
 								form.HasObjection, 
-								form.ObjectionReason, 
 								form.HasDebt, 
 								form.Email, 
 								form.Phone, 
@@ -126,7 +125,6 @@ namespace UDI_backend.Controllers {
 				_db.EditForm(
 					id,
 					form.HasObjection,
-					form.ObjectionReason,
 					form.HasDebt,
 					form.Email,
 					form.Phone,

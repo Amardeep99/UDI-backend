@@ -4,7 +4,7 @@
 
 		public bool HasObjection { get; set; }
 
-		public string ObjectionReason { get; set; } = "";
+		public DateTime? SuggestedTravelDate { get; set; }
 
 		public bool HasDebt { get; set; }
 

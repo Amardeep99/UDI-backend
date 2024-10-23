@@ -2,8 +2,6 @@
 	public class EditFormRequest {
 		public bool HasObjection { get; set; }
 
-		public string ObjectionReason { get; set; } = "";
-
 		public bool HasDebt { get; set; }
 
 		public string Email { get; set; } = null!;

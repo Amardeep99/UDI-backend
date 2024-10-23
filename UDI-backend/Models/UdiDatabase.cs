@@ -21,6 +21,10 @@ public class UdiDatabase : DbContext {
 
 		modelBuilder.Entity<Reference>()
 			.Property(r => r.FormId)
-			.IsRequired(false);  
+			.IsRequired(false);
+
+		modelBuilder.Entity<Reference>()
+			.Property(r => r.Deadline)
+			.HasDefaultValueSql("DATEADD(day, 14, GETUTCDATE())");
 	}
 }
