@@ -13,6 +13,8 @@ public class Reference {
 
     public int OrganisationNr { get; set; }
 
+    public DateTime Deadline { get; set; }
+
     public virtual Application Application { get; set; } = null!;
 
     public virtual Form? Form { get; set; }

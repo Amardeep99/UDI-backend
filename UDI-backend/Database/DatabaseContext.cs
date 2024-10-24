@@ -78,15 +78,23 @@ namespace UDI_backend.Database {
 			return reference.Id;
 		}
 
-		public int CreateForm(int refId, bool hasObjection, string objectionReason, 
+		public int CreateForm(int refId, bool hasObjection, string? suggestedTravelDate, 
 			bool hasDebt, string email, string phone, string contactName) {
 
-			if (!ReferenceExists(refId)) throw new KeyNotFoundException("No such reference exists");
-			if (ReferenceHasFormId(refId)) throw new ReferenceAlreadyHasFormIdException();
+			if (!ReferenceExists(refId)) 
+				throw new KeyNotFoundException("No such reference exists");
+
+			if (ReferenceHasFormId(refId)) 
+				throw new ReferenceAlreadyHasFormIdException();
+			
+			if (!CheckValidDateOnlyOrNull(suggestedTravelDate))
+				throw new FormatException("Suggested travel date format is not valid. Expected format: YYYY-MM-DD. Or date is not in the future");
 
 
-			Form form = new() { ReferenceId = refId, HasObjection = hasObjection, ObjectionReason = objectionReason, HasDebt = hasDebt, 
-									Email = email, Phone = phone, ContactName = contactName };
+			Form form = new() { ReferenceId = refId, HasObjection = hasObjection,  
+									HasDebt = hasDebt, Email = email, 
+									Phone = phone, ContactName = contactName,
+									SuggestedTravelDate = suggestedTravelDate is null ? null : DateOnly.Parse(suggestedTravelDate)};
 
 			_db.Forms.Add(form);
 			_db.SaveChanges();
@@ -95,15 +103,20 @@ namespace UDI_backend.Database {
 			return form.Id;
 		}
 
-		public void EditForm(int id, bool hasObjection, string objectionReason,
+		public void EditForm(int id, bool hasObjection, string? suggestedTravelDate,
 			bool hasDebt, string email, string phone, string contactName) {
 
 			Form? form = _db.Forms.FirstOrDefault(f => f.Id == id);
 
-			if (form == null) throw new KeyNotFoundException("No form with this id");
-			
+			if (form == null) 
+				throw new KeyNotFoundException("No form with this id");
+
+			if (!CheckValidDateOnlyOrNull(suggestedTravelDate))
+				throw new FormatException("Suggested travel date format is not valid, or date is not in the future. Expected format: YYYY-MM-DD.");
+
+
 			form.HasObjection = hasObjection;
-			form.ObjectionReason = objectionReason;	
+			form.SuggestedTravelDate = suggestedTravelDate is null ? null : DateOnly.Parse(suggestedTravelDate);
 			form.HasDebt = hasDebt;
 			form.Email = email;
 			form.Phone = phone;
@@ -123,6 +136,18 @@ namespace UDI_backend.Database {
 			return true;
 		}
 
+		public bool CheckValidDateOnlyOrNull(string? date) {
+			if (date is null) return true;
+
+			try {
+				DateOnly parsedDate = DateOnly.Parse(date);
+				if (parsedDate < DateOnly.FromDateTime(DateTime.Now)) return false;
+			} catch (Exception) {
+				return false;
+			}
+
+			return true;
+		}
 		public bool CheckIfApplicationValid(UdiDatabase db, int dNumber, string travelDate) {
 			DateTime parsedDate = new();
 			try {

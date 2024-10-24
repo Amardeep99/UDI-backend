@@ -2,7 +2,7 @@
 	public class EditFormRequest {
 		public bool HasObjection { get; set; }
 
-		public string ObjectionReason { get; set; } = "";
+		public string? SuggestedTravelDate { get; set; }
 
 		public bool HasDebt { get; set; }
 

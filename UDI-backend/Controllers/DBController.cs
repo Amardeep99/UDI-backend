@@ -22,7 +22,7 @@ namespace UDI_backend.Controllers {
 			try {
 				Reference? reference = _db.GetReference(refId);
 				DateTime? travelDateTime = _db.GetTravelDate(refId);
-				DateOnly? travelDate = travelDateTime.HasValue ? DateOnly.FromDateTime(travelDateTime.Value) : (DateOnly?)null;
+				DateOnly? travelDate = travelDateTime.HasValue ? DateOnly.FromDateTime(travelDateTime.Value) : null;
 				string name = await _client.GetOrganisationDetails(reference.OrganisationNr) ?? "Ukjent organisasjon";
 
 				var data = new {
@@ -32,6 +32,7 @@ namespace UDI_backend.Controllers {
 					reference?.OrganisationNr,
 					ApplicantName = reference?.Application.Name,
 					OrganisationName = name,
+					reference?.Deadline
 				};
 
 				return Ok(data);
@@ -68,8 +69,6 @@ namespace UDI_backend.Controllers {
 			catch (Exception) {
 				return StatusCode(500);
 			}
-
-			
 		}
 
 		[HttpPost("referanse")]
@@ -97,14 +96,12 @@ namespace UDI_backend.Controllers {
 				int id = _db.CreateForm(
 								form.ReferenceId, 
 								form.HasObjection, 
-								form.ObjectionReason, 
+								form.SuggestedTravelDate,
 								form.HasDebt, 
 								form.Email, 
 								form.Phone, 
 								form.ContactName);
 				return Ok(id);
-
-
 			} 
 			catch (KeyNotFoundException keyex) {
 				return BadRequest(keyex.Message);
@@ -112,8 +109,8 @@ namespace UDI_backend.Controllers {
 			catch (ReferenceAlreadyHasFormIdException refex) {
 				return BadRequest(refex.Message);
 			}
-			catch (Exception) {
-				return StatusCode(500);
+			catch (Exception e) {
+				return StatusCode(500, e.Message);
 			}
 
 		}
@@ -126,7 +123,7 @@ namespace UDI_backend.Controllers {
 				_db.EditForm(
 					id,
 					form.HasObjection,
-					form.ObjectionReason,
+					form.SuggestedTravelDate,
 					form.HasDebt,
 					form.Email,
 					form.Phone,
@@ -135,6 +132,8 @@ namespace UDI_backend.Controllers {
 
 			} catch (KeyNotFoundException keyex) {
 				return BadRequest(keyex.Message);
+			} catch (FormatException fex) {
+				return BadRequest(fex.Message);
 			} catch (Exception) {
 				return StatusCode(500);
 			}
