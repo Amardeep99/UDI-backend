@@ -109,8 +109,8 @@ namespace UDI_backend.Controllers {
 			catch (ReferenceAlreadyHasFormIdException refex) {
 				return BadRequest(refex.Message);
 			}
-			catch (Exception) {
-				return StatusCode(500);
+			catch (Exception e) {
+				return StatusCode(500, e.Message);
 			}
 
 		}
@@ -132,6 +132,8 @@ namespace UDI_backend.Controllers {
 
 			} catch (KeyNotFoundException keyex) {
 				return BadRequest(keyex.Message);
+			} catch (FormatException fex) {
+				return BadRequest(fex.Message);
 			} catch (Exception) {
 				return StatusCode(500);
 			}

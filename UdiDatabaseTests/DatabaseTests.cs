@@ -85,10 +85,12 @@ namespace UDI_backend.Tests {
 		}
 
 		[Theory]
-		[InlineData(1000001, "2025-01-01", "Test Person 1", 2000001, true, null, false, "initial@example.com", "1234567890", "John Doe",
+		[InlineData(1000001, "2025-01-01", "Test Person 1", 2000001, true, "2025-02-02", false, "initial@example.com", "1234567890", "John Doe",
 					false, "2025-02-02", true, "updated@example.com", "0987654321", "Jane Smith")]
-		public void EditForm_ValidData_UpdatesForm(int dNumber, string travelDate, string name, int orgNr,
-												   bool initialHasObjection, string? intialSuggestedTravelDate, bool initialHasDebt,
+		[InlineData(123, "2026-02-02", "Test 2", 321, false, null, false, "before@mai.no", "99123321", "Kontakt person", 
+					true, "2025-03-03", false, "new@mail.no", "99332211", "Ny person")]
+		public void EditForm_ValidData_UpdatesForm(int dNumber, string travelDate, string name, int orgNr, bool initialHasObjection, 
+												   string? intialSuggestedTravelDate, bool initialHasDebt,
 												   string initialEmail, string initialPhone, string initialContactName,
 												   bool newHasObjection, string? newSuggestedTravelDate, bool newHasDebt,
 												   string newEmail, string newPhone, string newContactName) {

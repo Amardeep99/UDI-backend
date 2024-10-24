@@ -112,7 +112,7 @@ namespace UDI_backend.Database {
 				throw new KeyNotFoundException("No form with this id");
 
 			if (!CheckValidDateOnlyOrNull(suggestedTravelDate))
-				throw new FormatException("Suggested travel date format is not valid. Expected format: YYYY-MM-DD.");
+				throw new FormatException("Suggested travel date format is not valid, or date is not in the future. Expected format: YYYY-MM-DD.");
 
 
 			form.HasObjection = hasObjection;
