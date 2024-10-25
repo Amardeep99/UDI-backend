@@ -109,6 +109,9 @@ namespace UDI_backend.Controllers {
 			catch (ReferenceAlreadyHasFormIdException refex) {
 				return BadRequest(refex.Message);
 			}
+			catch (DebtTrueWhileObjectionFalseException dex) {
+				return BadRequest(dex.Message);
+			}
 			catch (Exception e) {
 				return StatusCode(500, e.Message);
 			}
@@ -134,6 +137,8 @@ namespace UDI_backend.Controllers {
 				return BadRequest(keyex.Message);
 			} catch (FormatException fex) {
 				return BadRequest(fex.Message);
+			} catch (DebtTrueWhileObjectionFalseException dex) {
+				return BadRequest(dex.Message);
 			} catch (Exception) {
 				return StatusCode(500);
 			}

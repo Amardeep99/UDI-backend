@@ -90,7 +90,10 @@ namespace UDI_backend.Database {
 			if (!CheckValidDateOnlyOrNull(suggestedTravelDate))
 				throw new FormatException("Suggested travel date format is not valid. Expected format: YYYY-MM-DD. Or date is not in the future");
 
+			if (!CheckValidHasObjectionAndHasDebt(hasObjection, hasDebt))
+				throw new DebtTrueWhileObjectionFalseException();
 
+			
 			Form form = new() { ReferenceId = refId, HasObjection = hasObjection,  
 									HasDebt = hasDebt, Email = email, 
 									Phone = phone, ContactName = contactName,
@@ -114,6 +117,8 @@ namespace UDI_backend.Database {
 			if (!CheckValidDateOnlyOrNull(suggestedTravelDate))
 				throw new FormatException("Suggested travel date format is not valid, or date is not in the future. Expected format: YYYY-MM-DD.");
 
+			if (!CheckValidHasObjectionAndHasDebt(hasObjection, hasDebt))
+				throw new DebtTrueWhileObjectionFalseException();
 
 			form.HasObjection = hasObjection;
 			form.SuggestedTravelDate = suggestedTravelDate is null ? null : DateOnly.Parse(suggestedTravelDate);
@@ -134,6 +139,10 @@ namespace UDI_backend.Database {
 			_db.SaveChanges();
 
 			return true;
+		}
+
+		public bool CheckValidHasObjectionAndHasDebt(bool hasObjection, bool hasDebt) {
+			return hasObjection || !hasDebt;
 		}
 
 		public bool CheckValidDateOnlyOrNull(string? date) {
