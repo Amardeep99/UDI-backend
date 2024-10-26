@@ -25,19 +25,19 @@ Authentication is not handled in the backend of the solution.
 
 The service exposes the following API endpoints:
 
-- `GET /api/v1/referanse/{refid}`: Get reference details
+- `GET /api/v1/referanse/{refNr}`: Get reference details
 - `GET /api/v1/skjema/{formId}`: Get form details
 - `POST /api/v1/soknad`: Create a new application
 - `POST /api/v1/referanse`: Create a new reference
 - `POST /api/v1/skjema`: Create a new form
-- `PUT /api/v1/skjema/{id}`: Edit an existing form
+- `PUT /api/v1/skjema/{formId}`: Edit an existing form
 
 ### Get Reference Details
 
-- **URL**: `/referanse/{refid}`
+- **URL**: `/referanse/{refNr}`
 - **Method**: GET
 - **URL Params**: 
-  - `refid` (integer, required): The reference ID
+  - `refNr` (integer, required): The reference number
 - **Success Response**: 
   - Code: 200
   - Content: JSON object containing reference details including:
@@ -98,7 +98,36 @@ The service exposes the following API endpoints:
 
 ## Request/Response Formats
 
-### CreateApplicationRequest
+### GET /referanse/{refNr}
+
+```json
+  {
+    "referenceExists": true,
+    "formId": 1,
+    "travelDate": "2025-01-01",
+    "organisationNr": 321,
+    "applicantName": "Test person",
+    "organisationName": "Ukjent organisasjon",
+    "deadline": "2024-11-09T11:05:22.63"
+}
+```
+
+### GET /skjema/"{formId}"
+```json	
+{
+    "id": 1,
+    "referenceNumber": 71126583,
+    "hasObjection": false,
+    "suggestedTravelDate": "2025-12-01",
+    "hasDebt": false,
+    "email": "new@example.com",
+    "phone": "12333890",
+    "contactName": "Fake person",
+    "reference": null
+}
+```
+
+### POST /soknad
 
 ```json
 {
@@ -108,7 +137,7 @@ The service exposes the following API endpoints:
 }
 ```
 
-### CreateReferenceRequest
+### POST /referanse
 
 ```json
 {
@@ -117,13 +146,12 @@ The service exposes the following API endpoints:
 }
 ```
 
-### CreateFormRequest
+### POST /skjema
 
 ```json
 {
   "ReferenceId": 5678,
   "HasObjection": false,
-  "ObjectionReason": "",
   "HasDebt": false,
   "Email": "john.doe@example.com",
   "Phone": "+4712345678",
@@ -131,12 +159,11 @@ The service exposes the following API endpoints:
 }
 ```
 
-### EditFormRequest
+### PUT /skjema/"{formId}"
 
 ```json
 {
   "HasObjection": true,
-  "ObjectionReason": "Reason for objection",
   "HasDebt": false,
   "Email": "john.doe@example.com",
   "Phone": "+4712345678",
