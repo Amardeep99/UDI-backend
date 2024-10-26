@@ -22,7 +22,8 @@ public class UdiDatabase : DbContext {
 
 			entity.HasOne(r => r.Form)
 			 .WithOne(f => f.Reference)
-			 .HasForeignKey<Form>(f => f.ReferenceNumber);
+			 .HasForeignKey<Form>(f => f.ReferenceNumber)
+			 .OnDelete(DeleteBehavior.Cascade);
 
 			entity.Property(r => r.FormId)
 			 .IsRequired(false);

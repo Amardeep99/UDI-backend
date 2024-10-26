@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace UDI_backend.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class newInit : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,6 +17,7 @@ namespace UDI_backend.Migrations
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     dnumber = table.Column<int>(type: "int", nullable: false),
                     traveldate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -29,14 +30,15 @@ namespace UDI_backend.Migrations
                 name: "references",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    referencenumber = table.Column<int>(type: "int", nullable: false),
                     applicationid = table.Column<int>(type: "int", nullable: false),
-                    formid = table.Column<int>(type: "int", nullable: true)
+                    formid = table.Column<int>(type: "int", nullable: true),
+                    organisationnr = table.Column<int>(type: "int", nullable: false),
+                    deadline = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "DATEADD(day, 14, GETUTCDATE())")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_references", x => x.id);
+                    table.PrimaryKey("pk_references", x => x.referencenumber);
                     table.ForeignKey(
                         name: "fk_references_applications_applicationid",
                         column: x => x.applicationid,
@@ -51,12 +53,10 @@ namespace UDI_backend.Migrations
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    referenceid = table.Column<int>(type: "int", nullable: false),
+                    referencenumber = table.Column<int>(type: "int", nullable: false),
                     hasobjection = table.Column<bool>(type: "bit", nullable: false),
-                    objectionreason = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    suggestedtraveldate = table.Column<DateOnly>(type: "date", nullable: true),
                     hasdebt = table.Column<bool>(type: "bit", nullable: false),
-                    organisationnr = table.Column<int>(type: "int", nullable: false),
-                    organisationname = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     contactname = table.Column<string>(type: "nvarchar(max)", nullable: false)
@@ -65,17 +65,17 @@ namespace UDI_backend.Migrations
                 {
                     table.PrimaryKey("pk_forms", x => x.id);
                     table.ForeignKey(
-                        name: "fk_forms_references_referenceid",
-                        column: x => x.referenceid,
+                        name: "fk_forms_references_referencenumber",
+                        column: x => x.referencenumber,
                         principalTable: "references",
-                        principalColumn: "id",
+                        principalColumn: "referencenumber",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "ix_forms_referenceid",
+                name: "ix_forms_referencenumber",
                 table: "forms",
-                column: "referenceid",
+                column: "referencenumber",
                 unique: true);
 
             migrationBuilder.CreateIndex(
