@@ -14,17 +14,18 @@ public class UdiDatabase : DbContext {
 	}
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder) {
-		modelBuilder.Entity<Reference>()
-			.HasOne(r => r.Form)          
-			.WithOne(f => f.Reference)      
-			.HasForeignKey<Form>(f => f.ReferenceId);  
+		modelBuilder.Entity<Reference>(entity => {
+			entity.HasKey(r => r.ReferenceNumber);
 
-		modelBuilder.Entity<Reference>()
-			.Property(r => r.FormId)
+			entity.HasOne(r => r.Form)
+			.WithOne(f => f.Reference)
+			.HasForeignKey<Form>(f => f.ReferenceNumber);
+
+			entity.Property(r => r.FormId)
 			.IsRequired(false);
 
-		modelBuilder.Entity<Reference>()
-			.Property(r => r.Deadline)
+			entity.Property(r => r.Deadline)
 			.HasDefaultValueSql("DATEADD(day, 14, GETUTCDATE())");
+		});
 	}
 }

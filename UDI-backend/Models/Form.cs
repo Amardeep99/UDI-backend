@@ -6,7 +6,7 @@ namespace UDI_backend.Models;
 public class Form {
     public int Id { get; set; }
 
-    public int ReferenceId { get; set; }
+    public int ReferenceNumber { get; set; }
 
     public bool HasObjection { get; set; }
 

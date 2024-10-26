@@ -1,11 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace UDI_backend.Models;
 
 public class Reference {
-    public int Id { get; set; }
+
+    [Key]
+    public int ReferenceNumber { get; set; }
 
     public int ApplicationId { get; set; }
 
