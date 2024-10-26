@@ -17,15 +17,18 @@ public class UdiDatabase : DbContext {
 		modelBuilder.Entity<Reference>(entity => {
 			entity.HasKey(r => r.ReferenceNumber);
 
+			entity.Property(r => r.ReferenceNumber)
+			 .ValueGeneratedNever();
+
 			entity.HasOne(r => r.Form)
-			.WithOne(f => f.Reference)
-			.HasForeignKey<Form>(f => f.ReferenceNumber);
+			 .WithOne(f => f.Reference)
+			 .HasForeignKey<Form>(f => f.ReferenceNumber);
 
 			entity.Property(r => r.FormId)
-			.IsRequired(false);
+			 .IsRequired(false);
 
 			entity.Property(r => r.Deadline)
-			.HasDefaultValueSql("DATEADD(day, 14, GETUTCDATE())");
+			 .HasDefaultValueSql("DATEADD(day, 14, GETUTCDATE())");
 		});
 	}
 }

@@ -1,11 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace UDI_backend.Models;
 
 public class Reference {
 
     [Key]
-    public int ReferenceNumber { get; set; }
+	[DatabaseGenerated(DatabaseGeneratedOption.None)]
+	public int ReferenceNumber { get; set; }
 
     public int ApplicationId { get; set; }
 

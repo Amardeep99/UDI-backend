@@ -68,7 +68,12 @@ namespace UDI_backend.Database {
 
 			if (application == null ) throw new KeyNotFoundException("No application of this id");
 
-			Reference reference = new() { ApplicationId = applicationID, Application = application, OrganisationNr = orgNr};
+			Reference reference = new() { 
+				ReferenceNumber = CreateUniqueReferenceNumber(),
+				ApplicationId = applicationID, 
+				Application = application, 
+				OrganisationNr = orgNr
+			};
 			
 			try {
 				_db.References.Add(reference);
@@ -174,6 +179,23 @@ namespace UDI_backend.Database {
 
 		}
 
+		public int CreateUniqueReferenceNumber() {
+			int referenceNumber;
+			Random random = new();
+			bool exists;
+			int attempts = 0;
+
+			do {
+				referenceNumber = random.Next(10000000, 100000000);
+				exists = _db.References.Any(r => r.ReferenceNumber == referenceNumber);
+				attempts++;
+			} while (exists && attempts <= 50);
+
+			if (attempts == 50) throw new Exception("Unique reference number could not be created");
+
+			return referenceNumber;
+		}
+			
 	}
 }
 

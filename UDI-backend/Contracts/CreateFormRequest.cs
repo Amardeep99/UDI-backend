@@ -1,6 +1,6 @@
 ﻿namespace UDI_backend.Contracts {
 	public class CreateFormRequest {
-		public int ReferenceId { get; set; }
+		public int ReferenceNumber { get; set; }
 
 		public bool HasObjection { get; set; }
 

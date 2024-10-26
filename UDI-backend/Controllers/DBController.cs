@@ -17,11 +17,11 @@ namespace UDI_backend.Controllers {
 			_client = client;
 		}
 
-		[HttpGet("referanse/{refid}")]
-		public async Task<IActionResult> GetReference(int refId) {
+		[HttpGet("referanse/{refNr}")]
+		public async Task<IActionResult> GetReference(int refNr) {
 			try {
-				Reference? reference = _db.GetReference(refId);
-				DateTime? travelDateTime = _db.GetTravelDate(refId);
+				Reference? reference = _db.GetReference(refNr);
+				DateTime? travelDateTime = _db.GetTravelDate(refNr);
 				DateOnly? travelDate = travelDateTime.HasValue ? DateOnly.FromDateTime(travelDateTime.Value) : null;
 				string name = await _client.GetOrganisationDetails(reference.OrganisationNr) ?? "Ukjent organisasjon";
 
@@ -76,8 +76,8 @@ namespace UDI_backend.Controllers {
 			if (request == null) return BadRequest("Bad request body");
 
 			try {
-				int id = _db.CreateReference(request.ApplicationId, request.OrganisationNr);
-				return Ok(id);
+				int refNr = _db.CreateReference(request.ApplicationId, request.OrganisationNr);
+				return Ok(refNr);
 
 			} catch(KeyNotFoundException keyex) {
 				return NotFound(keyex.Message);
@@ -94,7 +94,7 @@ namespace UDI_backend.Controllers {
 
 			try {
 				int id = _db.CreateForm(
-								form.ReferenceId, 
+								form.ReferenceNumber, 
 								form.HasObjection, 
 								form.SuggestedTravelDate,
 								form.HasDebt, 
