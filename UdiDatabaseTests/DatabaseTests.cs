@@ -49,11 +49,11 @@ namespace UDI_backend.Tests {
 			int applicationId = _databaseContext.CreateApplication(dNumber, travelDate, name);
 
 			// Act
-			int referenceId = _databaseContext.CreateReference(applicationId, orgNr);
+			int refNr = _databaseContext.CreateReference(applicationId, orgNr);
 
 			// Assert
-			Assert.True(referenceId > 0);
-			var savedReference = _dbContext.References.FirstOrDefault(r => r.Id == referenceId);
+			Assert.True(refNr > 0);
+			var savedReference = _dbContext.References.FirstOrDefault(r => r.ReferenceNumber == refNr);
 			Assert.NotNull(savedReference);
 			Assert.Equal(applicationId, savedReference.ApplicationId);
 			Assert.Equal(orgNr, savedReference.OrganisationNr);
@@ -76,7 +76,7 @@ namespace UDI_backend.Tests {
 			Assert.True(formId > 0);
 			var savedForm = _dbContext.Forms.FirstOrDefault(f => f.Id == formId);
 			Assert.NotNull(savedForm);
-			Assert.Equal(referenceId, savedForm.ReferenceId);
+			Assert.Equal(referenceId, savedForm.ReferenceNumber);
 			Assert.Equal(hasObjection, savedForm.HasObjection);
 			Assert.Equal(hasDebt, savedForm.HasDebt);
 			Assert.Equal(email, savedForm.Email);

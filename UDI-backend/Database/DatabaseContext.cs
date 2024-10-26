@@ -9,19 +9,21 @@ namespace UDI_backend.Database {
 		public DatabaseContext(UdiDatabase db) {
 			_db = db;
 		}
-		public bool ReferenceExists(int id) {
-			return _db.References.Any(r => r.Id == id);
+		public bool ReferenceExists(int refNr) {
+			return _db.References.Any(r => r.ReferenceNumber == refNr);
 		}
 
-		public Reference GetReference(int id) { 
-			Reference? reference = _db.References.Include(r => r.Application).FirstOrDefault(r => r.Id == id);
+		public Reference GetReference(int refNr) { 
+			Reference? reference = _db.References.Include(r => r.Application)
+												 .FirstOrDefault(r => r.ReferenceNumber == refNr);
+
 			if (reference == null) throw new KeyNotFoundException("No reference with that id");
 
 			return reference;
 		}
 
-		public bool ReferenceHasFormId(int id) {
-			return _db.References.FirstOrDefault(r => r.Id == id)?.FormId != null;
+		public bool ReferenceHasFormId(int refNr) {
+			return _db.References.FirstOrDefault(r => r.ReferenceNumber == refNr)?.FormId != null;
 		}
 
 		public Form? GetForm(int formId) {
@@ -31,10 +33,10 @@ namespace UDI_backend.Database {
 			return form;	
 		}
 
-		public DateTime? GetTravelDate(int refId) {
+		public DateTime? GetTravelDate(int refNr) {
 			DateTime? travelDate = _db.References
 										.Include(r => r.Application)
-										.Where(r => r.Id == refId)
+										.Where(r => r.ReferenceNumber == refNr)
 										.Select(r => r.Application.TravelDate)
 										.FirstOrDefault();
 
@@ -43,8 +45,8 @@ namespace UDI_backend.Database {
 			return travelDate;
 		}
 
-		public int? FormIdOfReferenceOrNull(int id) {
-			return _db.References.FirstOrDefault(r => r.Id == id)?.FormId;
+		public int? FormIdOfReferenceOrNull(int refNr) {
+			return _db.References.FirstOrDefault(r => r.ReferenceNumber == refNr)?.FormId;
 		}
 
 		public int CreateApplication(int dNumber, string travelDate, string name) {
@@ -66,7 +68,12 @@ namespace UDI_backend.Database {
 
 			if (application == null ) throw new KeyNotFoundException("No application of this id");
 
-			Reference reference = new() { ApplicationId = applicationID, Application = application, OrganisationNr = orgNr};
+			Reference reference = new() { 
+				ReferenceNumber = CreateUniqueReferenceNumber(),
+				ApplicationId = applicationID, 
+				Application = application, 
+				OrganisationNr = orgNr
+			};
 			
 			try {
 				_db.References.Add(reference);
@@ -75,16 +82,16 @@ namespace UDI_backend.Database {
 				throw;
 			}
 
-			return reference.Id;
+			return reference.ReferenceNumber;
 		}
 
-		public int CreateForm(int refId, bool hasObjection, string? suggestedTravelDate, 
+		public int CreateForm(int refNr, bool hasObjection, string? suggestedTravelDate, 
 			bool hasDebt, string email, string phone, string contactName) {
 
-			if (!ReferenceExists(refId)) 
+			if (!ReferenceExists(refNr)) 
 				throw new KeyNotFoundException("No such reference exists");
 
-			if (ReferenceHasFormId(refId)) 
+			if (ReferenceHasFormId(refNr)) 
 				throw new ReferenceAlreadyHasFormIdException();
 			
 			if (!CheckValidDateOnlyOrNull(suggestedTravelDate))
@@ -94,14 +101,14 @@ namespace UDI_backend.Database {
 				throw new DebtTrueWhileObjectionFalseException();
 
 			
-			Form form = new() { ReferenceId = refId, HasObjection = hasObjection,  
+			Form form = new() { ReferenceNumber = refNr, HasObjection = hasObjection,  
 									HasDebt = hasDebt, Email = email, 
 									Phone = phone, ContactName = contactName,
 									SuggestedTravelDate = suggestedTravelDate is null ? null : DateOnly.Parse(suggestedTravelDate)};
 
 			_db.Forms.Add(form);
 			_db.SaveChanges();
-			SetFormIDToReference(form.ReferenceId, form.Id);
+			SetFormIDToReference(form.ReferenceNumber, form.Id);
 
 			return form.Id;
 		}
@@ -131,8 +138,8 @@ namespace UDI_backend.Database {
 			_db.SaveChanges();
 		}
 
-		public bool SetFormIDToReference(int referenceID, int formID) {
-			Reference reference = _db.References.First(r => r.Id == referenceID);
+		public bool SetFormIDToReference(int refNr, int formID) {
+			Reference reference = _db.References.First(r => r.ReferenceNumber == refNr);
 
 
 			reference.FormId = formID;
@@ -172,6 +179,23 @@ namespace UDI_backend.Database {
 
 		}
 
+		public int CreateUniqueReferenceNumber() {
+			int referenceNumber;
+			Random random = new();
+			bool exists;
+			int attempts = 0;
+
+			do {
+				referenceNumber = random.Next(10000000, 100000000);
+				exists = _db.References.Any(r => r.ReferenceNumber == referenceNumber);
+				attempts++;
+			} while (exists && attempts <= 50);
+
+			if (attempts == 50) throw new Exception("Unique reference number could not be created");
+
+			return referenceNumber;
+		}
+			
 	}
 }
 

@@ -14,17 +14,22 @@ public class UdiDatabase : DbContext {
 	}
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder) {
-		modelBuilder.Entity<Reference>()
-			.HasOne(r => r.Form)          
-			.WithOne(f => f.Reference)      
-			.HasForeignKey<Form>(f => f.ReferenceId);  
+		modelBuilder.Entity<Reference>(entity => {
+			entity.HasKey(r => r.ReferenceNumber);
 
-		modelBuilder.Entity<Reference>()
-			.Property(r => r.FormId)
-			.IsRequired(false);
+			entity.Property(r => r.ReferenceNumber)
+			 .ValueGeneratedNever();
 
-		modelBuilder.Entity<Reference>()
-			.Property(r => r.Deadline)
-			.HasDefaultValueSql("DATEADD(day, 14, GETUTCDATE())");
+			entity.HasOne(r => r.Form)
+			 .WithOne(f => f.Reference)
+			 .HasForeignKey<Form>(f => f.ReferenceNumber)
+			 .OnDelete(DeleteBehavior.Cascade);
+
+			entity.Property(r => r.FormId)
+			 .IsRequired(false);
+
+			entity.Property(r => r.Deadline)
+			 .HasDefaultValueSql("DATEADD(day, 14, GETUTCDATE())");
+		});
 	}
 }

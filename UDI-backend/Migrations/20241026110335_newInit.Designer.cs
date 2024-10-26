@@ -12,8 +12,8 @@ using UDI_backend.Models;
 namespace UDI_backend.Migrations
 {
     [DbContext(typeof(UdiDatabase))]
-    [Migration("20241017080140_nameInApplication")]
-    partial class nameInApplication
+    [Migration("20241026110335_newInit")]
+    partial class newInit
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -80,41 +80,44 @@ namespace UDI_backend.Migrations
                         .HasColumnType("bit")
                         .HasColumnName("hasobjection");
 
-                    b.Property<string>("ObjectionReason")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("objectionreason");
-
                     b.Property<string>("Phone")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("phone");
 
-                    b.Property<int>("ReferenceId")
+                    b.Property<int>("ReferenceNumber")
                         .HasColumnType("int")
-                        .HasColumnName("referenceid");
+                        .HasColumnName("referencenumber");
+
+                    b.Property<DateOnly?>("SuggestedTravelDate")
+                        .HasColumnType("date")
+                        .HasColumnName("suggestedtraveldate");
 
                     b.HasKey("Id")
                         .HasName("pk_forms");
 
-                    b.HasIndex("ReferenceId")
+                    b.HasIndex("ReferenceNumber")
                         .IsUnique()
-                        .HasDatabaseName("ix_forms_referenceid");
+                        .HasDatabaseName("ix_forms_referencenumber");
 
                     b.ToTable("forms", (string)null);
                 });
 
             modelBuilder.Entity("UDI_backend.Models.Reference", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("ReferenceNumber")
                         .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnName("referencenumber");
 
                     b.Property<int>("ApplicationId")
                         .HasColumnType("int")
                         .HasColumnName("applicationid");
+
+                    b.Property<DateTime>("Deadline")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasColumnName("deadline")
+                        .HasDefaultValueSql("DATEADD(day, 14, GETUTCDATE())");
 
                     b.Property<int?>("FormId")
                         .HasColumnType("int")
@@ -124,7 +127,7 @@ namespace UDI_backend.Migrations
                         .HasColumnType("int")
                         .HasColumnName("organisationnr");
 
-                    b.HasKey("Id")
+                    b.HasKey("ReferenceNumber")
                         .HasName("pk_references");
 
                     b.HasIndex("ApplicationId")
@@ -137,10 +140,10 @@ namespace UDI_backend.Migrations
                 {
                     b.HasOne("UDI_backend.Models.Reference", "Reference")
                         .WithOne("Form")
-                        .HasForeignKey("UDI_backend.Models.Form", "ReferenceId")
+                        .HasForeignKey("UDI_backend.Models.Form", "ReferenceNumber")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_forms_references_referenceid");
+                        .HasConstraintName("fk_forms_references_referencenumber");
 
                     b.Navigation("Reference");
                 });
