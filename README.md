@@ -25,19 +25,19 @@ Authentication is not handled in the backend of the solution.
 
 The service exposes the following API endpoints:
 
-- `GET /api/v1/referanse/{refid}`: Get reference details
+- `GET /api/v1/referanse/{refNr}`: Get reference details
 - `GET /api/v1/skjema/{formId}`: Get form details
 - `POST /api/v1/soknad`: Create a new application
 - `POST /api/v1/referanse`: Create a new reference
 - `POST /api/v1/skjema`: Create a new form
-- `PUT /api/v1/skjema/{id}`: Edit an existing form
+- `PUT /api/v1/skjema/{formId}`: Edit an existing form
 
 ### Get Reference Details
 
-- **URL**: `/referanse/{refid}`
+- **URL**: `/referanse/{refNr}`
 - **Method**: GET
 - **URL Params**: 
-  - `refid` (integer, required): The reference ID
+  - `refNr` (integer, required): The reference number
 - **Success Response**: 
   - Code: 200
   - Content: JSON object containing reference details including:
@@ -47,7 +47,6 @@ The service exposes the following API endpoints:
     - OrganisationNr (integer)
     - ApplicantName (string)
     - OrganisationName (string)
-    - Deadline (datetime, nullable)
 
 ### Get Form Details
 
@@ -57,10 +56,7 @@ The service exposes the following API endpoints:
   - `formId` (integer, required): The form ID
 - **Success Response**:
   - Code: 200
-  - Content: Form object containing all form details
-- **Error Response**:
-  - Code: 404
-  - Content: Error message when form is not found
+  - Content: JSON object containing form details
 
 ### Create Application
 
@@ -70,9 +66,6 @@ The service exposes the following API endpoints:
 - **Success Response**:
   - Code: 200
   - Content: Integer (application ID)
-- **Error Response**:
-  - Code: 400
-  - Content: Error message if data is invalid or if person already has an ongoing process
 
 ### Create Reference
 
@@ -82,9 +75,6 @@ The service exposes the following API endpoints:
 - **Success Response**:
   - Code: 200
   - Content: Integer (reference ID)
-- **Error Response**:
-  - Code: 404
-  - Content: Error message if application is not found
 
 ### Create Form
 
@@ -94,9 +84,6 @@ The service exposes the following API endpoints:
 - **Success Response**:
   - Code: 200
   - Content: Integer (form ID)
-- **Error Response**:
-  - Code: 400
-  - Content: Error message if reference already has a form or if data is invalid
 
 ### Edit Form
 
@@ -108,13 +95,39 @@ The service exposes the following API endpoints:
 - **Success Response**:
   - Code: 200
   - Content: None
-- **Error Response**:
-  - Code: 400
-  - Content: Error message if form is not found or if data is invalid
 
 ## Request/Response Formats
 
-### CreateApplicationRequest
+### GET /referanse/{refNr}
+
+```json
+  {
+    "referenceExists": true,
+    "formId": 1,
+    "travelDate": "2025-01-01",
+    "organisationNr": 321,
+    "applicantName": "Test person",
+    "organisationName": "Ukjent organisasjon",
+    "deadline": "2024-11-09T11:05:22.63"
+}
+```
+
+### GET /skjema/"{formId}"
+```json	
+{
+    "id": 1,
+    "referenceNumber": 71126583,
+    "hasObjection": false,
+    "suggestedTravelDate": "2025-12-01",
+    "hasDebt": false,
+    "email": "new@example.com",
+    "phone": "12333890",
+    "contactName": "Fake person",
+    "reference": null
+}
+```
+
+### POST /soknad
 
 ```json
 {
@@ -124,7 +137,7 @@ The service exposes the following API endpoints:
 }
 ```
 
-### CreateReferenceRequest
+### POST /referanse
 
 ```json
 {
@@ -133,13 +146,12 @@ The service exposes the following API endpoints:
 }
 ```
 
-### CreateFormRequest
+### POST /skjema
 
 ```json
 {
   "ReferenceId": 5678,
   "HasObjection": false,
-  "SuggestedTravelDate": "2024-07-15",
   "HasDebt": false,
   "Email": "john.doe@example.com",
   "Phone": "+4712345678",
@@ -147,12 +159,11 @@ The service exposes the following API endpoints:
 }
 ```
 
-### EditFormRequest
+### PUT /skjema/"{formId}"
 
 ```json
 {
   "HasObjection": true,
-  "SuggestedTravelDate": "2024-07-15",
   "HasDebt": false,
   "Email": "john.doe@example.com",
   "Phone": "+4712345678",
@@ -165,14 +176,11 @@ The service exposes the following API endpoints:
 The API uses standard HTTP response codes to indicate the success or failure of requests:
 
 - 200: OK - The request was successful
-- 400: Bad Request - The request was invalid, has invalid date format, or cannot be served
+- 400: Bad Request - The request was invalid or cannot be served
 - 404: Not Found - The requested resource does not exist
 - 500: Internal Server Error - The server encountered an unexpected condition
 
-Error responses will include a message providing more details about the error. Specific validation includes:
-- Date validation: Dates must be in "YYYY-MM-DD" format and must be in the future
-- Duplicate checks: Cannot create multiple applications for the same DNumber
-- Reference validation: Cannot create a form for a reference that already has one
+Error responses will include a message providing more details about the error.
 
 ## Rate Limiting
 
@@ -199,27 +207,24 @@ Content-Type: application/json
   "TravelDate": "2023-07-15",
   "OrganisationNr": 987654321,
   "ApplicantName": "John Doe",
-  "OrganisationName": "Example Organization AS",
-  "Deadline": "2023-08-15T00:00:00"
+  "OrganisationName": "Example Organization AS"
 }
 ```
 
-### Creating a Form
+This response provides details about the reference with ID 1234, including associated form, travel date, organization details, and applicant name.
+
+### Creating an Application
 
 Request:
 ```http
-POST /api/v1/skjema HTTP/1.1
+POST /api/v1/soknad HTTP/1.1
 Host: udi.azurewebsites.net
 Content-Type: application/json
 
 {
-  "ReferenceId": 5678,
-  "HasObjection": false,
-  "SuggestedTravelDate": "2024-07-15",
-  "HasDebt": false,
-  "Email": "john.doe@example.com",
-  "Phone": "+4712345678",
-  "ContactName": "John Doe"
+  "DNumber": 12345678,
+  "TravelDate": "2023-07-15",
+  "Name": "John Doe"
 }
 ```
 
@@ -231,4 +236,4 @@ Content-Type: application/json
 1234
 ```
 
-This response indicates that a form was successfully created with ID 1234.
+This response indicates that an application was successfully created with ID 1234.
