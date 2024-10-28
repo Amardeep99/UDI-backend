@@ -2,11 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using UDI_backend.Exceptions;
 namespace UDI_backend.Database {
-	public class DatabaseContext {
+	public class DatabaseContext : IDatabaseContext {
 
-		private readonly UdiDatabase _db;
+		private readonly IUdiDatabase _db;
 
-		public DatabaseContext(UdiDatabase db) {
+		public DatabaseContext(IUdiDatabase db) {
 			_db = db;
 		}
 		public bool ReferenceExists(int refNr) {
@@ -53,7 +53,7 @@ namespace UDI_backend.Database {
 
 			bool isValid = CheckIfApplicationValid(_db, dNumber, travelDate);
 
-			if(!isValid) throw new InvalidDataException("Data does not have valid format");
+			if(!isValid) throw new InvalidDataException("Data does not have valid format or date is not in future");
 
 			Application application = new() { DNumber = dNumber, TravelDate = DateTime.Parse(travelDate), Name = name };
 			_db.Applications.Add(application);
@@ -164,17 +164,20 @@ namespace UDI_backend.Database {
 
 			return true;
 		}
-		public bool CheckIfApplicationValid(UdiDatabase db, int dNumber, string travelDate) {
+		public bool CheckIfApplicationValid(IUdiDatabase db, int dNumber, string travelDate) {
 			DateTime parsedDate = new();
+
 			try {
 				parsedDate = DateTime.Parse(travelDate);
 			} catch (Exception) {
 				return false;
 			}
 
-			if (db.Applications.Any(a => a.DNumber == dNumber)) {
+			if (db.Applications.Any(a => a.DNumber == dNumber)) 
 				throw new Exception("Person already has process ongoing");
-			}
+			if(parsedDate < DateTime.Now) return false;
+
+			
 			return true;
 
 		}

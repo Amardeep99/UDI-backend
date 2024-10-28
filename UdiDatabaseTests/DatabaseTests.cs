@@ -26,8 +26,8 @@ namespace UDI_backend.Tests {
 		}
 
 		[Theory]
-		[InlineData(1000001, "2023-11-15", "Test Person 1")]
-		[InlineData(1000002, "2023-12-01", "Test Person 2")]
+		[InlineData(1000001, "2025-11-15", "Test Person 1")]
+		[InlineData(1000002, "2025-12-01", "Test Person 2")]
 		public void CreateApplication_ValidData_ReturnsApplicationId(int dNumber, string travelDate, string name) {
 			// Act
 			int applicationId = _databaseContext.CreateApplication(dNumber, travelDate, name);
@@ -42,8 +42,8 @@ namespace UDI_backend.Tests {
 		}
 
 		[Theory]
-		[InlineData(1000001, "2023-11-15", "Test Person 1", 2000001)]
-		[InlineData(1000002, "2023-12-01", "Test Person 2", 2000002)]
+		[InlineData(1000001, "2025-11-15", "Test Person 1", 2000001)]
+		[InlineData(1000002, "2025-12-01", "Test Person 2", 2000002)]
 		public void CreateReference_ValidApplicationId_ReturnsReferenceId(int dNumber, string travelDate, string name, int orgNr) {
 			// Arrange
 			int applicationId = _databaseContext.CreateApplication(dNumber, travelDate, name);
@@ -60,8 +60,8 @@ namespace UDI_backend.Tests {
 		}
 
 		[Theory]
-		[InlineData(1000001, "2023-11-15", "Test Person 1", 2000001, true, "2025-10-01", false, "test1@example.com", "1234567890", "John Doe")]
-		[InlineData(1000002, "2023-12-01", "Test Person 2", 2000002, false, "2025-12-15", true, "test2@example.com", "0987654321", "Jane Smith")]
+		[InlineData(1000001, "2025-11-15", "Test Person 1", 2000001, true, "2025-10-01", false, "test1@example.com", "1234567890", "John Doe")]
+		[InlineData(1000002, "2025-12-01", "Test Person 2", 2000002, false, "2025-12-15", false, "test2@example.com", "0987654321", "Jane Smith")]
 		public void CreateForm_ValidData_ReturnsFormId(int dNumber, string travelDate, string name, int orgNr,
 													   bool hasObjection, string? suggestedTravelDate, bool hasDebt,
 													   string email, string phone, string contactName) {
@@ -86,7 +86,7 @@ namespace UDI_backend.Tests {
 
 		[Theory]
 		[InlineData(1000001, "2025-01-01", "Test Person 1", 2000001, true, "2025-02-02", false, "initial@example.com", "1234567890", "John Doe",
-					false, "2025-02-02", true, "updated@example.com", "0987654321", "Jane Smith")]
+					false, "2025-02-02", false, "updated@example.com", "0987654321", "Jane Smith")]
 		[InlineData(123, "2026-02-02", "Test 2", 321, false, null, false, "before@mai.no", "99123321", "Kontakt person", 
 					true, "2025-03-03", false, "new@mail.no", "99332211", "Ny person")]
 		public void EditForm_ValidData_UpdatesForm(int dNumber, string travelDate, string name, int orgNr, bool initialHasObjection, 

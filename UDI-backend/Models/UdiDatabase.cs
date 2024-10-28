@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace UDI_backend.Models;
 
-public class UdiDatabase : DbContext {
+public class UdiDatabase : DbContext, IUdiDatabase {
 
 	public DbSet<Application> Applications => Set<Application>();
 	public DbSet<Form> Forms => Set<Form>();
