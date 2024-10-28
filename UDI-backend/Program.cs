@@ -13,14 +13,14 @@ namespace UDI_backend {
 			// Add services to the container.
 			var connectionString = builder.Configuration.GetConnectionString("UdiDatabase");
 
-			builder.Services.AddDbContext<UdiDatabase>(options =>
+			builder.Services.AddDbContext<IUdiDatabase, UdiDatabase>(options =>
 				options.UseSqlServer(connectionString).UseLowerCaseNamingConvention());
 
-			builder.Services.AddScoped<DatabaseContext>();
+			builder.Services.AddScoped<IDatabaseContext, DatabaseContext>();
 
 			builder.Services.AddControllers();
 
-			builder.Services.AddHttpClient<BronnoysundsRegClient>();
+			builder.Services.AddHttpClient<IBronnoysundsRegClient, BronnoysundsRegClient>();
 
 			// Network settings
 			builder.Services.AddCors(options => {

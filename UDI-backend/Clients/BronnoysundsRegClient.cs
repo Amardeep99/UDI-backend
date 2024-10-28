@@ -2,7 +2,7 @@
 using UDI_backend.Clients.Models;
 
 namespace UDI_backend.Clients {
-	public class BronnoysundsRegClient {
+	public class BronnoysundsRegClient: IBronnoysundsRegClient {
 		private readonly HttpClient _client;
 		public string hello = "hello";
 		public BronnoysundsRegClient(HttpClient client) { 

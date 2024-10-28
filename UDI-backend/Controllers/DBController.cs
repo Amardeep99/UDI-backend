@@ -10,9 +10,9 @@ namespace UDI_backend.Controllers {
 	[ApiController]
 	[Route("api/v1")]
 	public class DBController : ControllerBase {
-		private readonly DatabaseContext _db;
-		private readonly BronnoysundsRegClient _client;
-		public DBController(DatabaseContext db, BronnoysundsRegClient client) {
+		private readonly IDatabaseContext _db;
+		private readonly IBronnoysundsRegClient _client;
+		public DBController(IDatabaseContext db, IBronnoysundsRegClient client) {
 			_db = db;
 			_client = client;
 		}
@@ -66,8 +66,8 @@ namespace UDI_backend.Controllers {
 			} catch (InvalidDataException dataex) {
 				return BadRequest(dataex.Message);
 			} 
-			catch (Exception) {
-				return StatusCode(500);
+			catch (Exception e) {
+				return StatusCode(500, e.Message);
 			}
 		}
 
