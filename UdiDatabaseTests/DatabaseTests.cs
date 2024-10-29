@@ -5,11 +5,11 @@ using UDI_backend.Models;
 namespace UDI_backend.Tests {
 	public class DatabaseContextTests : IDisposable {
 		private readonly UdiDatabase _dbContext;
-		private readonly DatabaseContext _databaseContext;
+		private readonly UdiApplicationManager _databaseContext;
 
 		public DatabaseContextTests() {
 			_dbContext = CreateDatabaseContext();
-			_databaseContext = new DatabaseContext(_dbContext);
+			_databaseContext = new UdiApplicationManager(_dbContext);
 		}
 
 		private UdiDatabase CreateDatabaseContext() {

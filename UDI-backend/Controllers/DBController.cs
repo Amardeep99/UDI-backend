@@ -10,9 +10,9 @@ namespace UDI_backend.Controllers {
 	[ApiController]
 	[Route("api/v1")]
 	public class DBController : ControllerBase {
-		private readonly IDatabaseContext _db;
+		private readonly IUdiApplicationManager _db;
 		private readonly IBronnoysundsRegClient _client;
-		public DBController(IDatabaseContext db, IBronnoysundsRegClient client) {
+		public DBController(IUdiApplicationManager db, IBronnoysundsRegClient client) {
 			_db = db;
 			_client = client;
 		}

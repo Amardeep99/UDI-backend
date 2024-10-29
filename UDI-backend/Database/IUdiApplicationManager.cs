@@ -2,7 +2,7 @@
 
 namespace UDI_backend.Database;
 
-public interface IDatabaseContext {
+public interface IUdiApplicationManager {
 	// Reference related methods
 	bool ReferenceExists(int refNr);
 	Reference GetReference(int refNr);

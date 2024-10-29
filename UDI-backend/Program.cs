@@ -16,7 +16,7 @@ namespace UDI_backend {
 			builder.Services.AddDbContext<IUdiDatabase, UdiDatabase>(options =>
 				options.UseSqlServer(connectionString).UseLowerCaseNamingConvention());
 
-			builder.Services.AddScoped<IDatabaseContext, DatabaseContext>();
+			builder.Services.AddScoped<IUdiApplicationManager, UdiApplicationManager>();
 
 			builder.Services.AddControllers();
 

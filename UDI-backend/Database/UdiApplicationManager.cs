@@ -2,11 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using UDI_backend.Exceptions;
 namespace UDI_backend.Database {
-	public class DatabaseContext : IDatabaseContext {
+	public class UdiApplicationManager : IUdiApplicationManager {
 
 		private readonly IUdiDatabase _db;
 
-		public DatabaseContext(IUdiDatabase db) {
+		public UdiApplicationManager(IUdiDatabase db) {
 			_db = db;
 		}
 		public bool ReferenceExists(int refNr) {
