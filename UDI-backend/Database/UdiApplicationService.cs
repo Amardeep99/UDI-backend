@@ -2,11 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using UDI_backend.Exceptions;
 namespace UDI_backend.Database {
-	public class UdiApplicationManager : IUdiApplicationManager {
+	public class UDIApplicationService : IUDIApplicationService {
 
-		private readonly IUdiDatabase _db;
+		private readonly IUdiDB _db;
 
-		public UdiApplicationManager(IUdiDatabase db) {
+		public UDIApplicationService(IUdiDB db) {
 			_db = db;
 		}
 		public bool ReferenceExists(int refNr) {
@@ -164,7 +164,7 @@ namespace UDI_backend.Database {
 
 			return true;
 		}
-		public bool CheckIfApplicationValid(IUdiDatabase db, int dNumber, string travelDate) {
+		public bool CheckIfApplicationValid(IUdiDB db, int dNumber, string travelDate) {
 			DateTime parsedDate = new();
 
 			try {

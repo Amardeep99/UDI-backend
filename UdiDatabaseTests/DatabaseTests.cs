@@ -4,20 +4,20 @@ using UDI_backend.Models;
 
 namespace UDI_backend.Tests {
 	public class DatabaseContextTests : IDisposable {
-		private readonly UdiDatabase _dbContext;
-		private readonly UdiApplicationManager _databaseContext;
+		private readonly UdiDB _dbContext;
+		private readonly UDIApplicationService _databaseContext;
 
 		public DatabaseContextTests() {
 			_dbContext = CreateDatabaseContext();
-			_databaseContext = new UdiApplicationManager(_dbContext);
+			_databaseContext = new UDIApplicationService(_dbContext);
 		}
 
-		private UdiDatabase CreateDatabaseContext() {
-			var options = new DbContextOptionsBuilder<UdiDatabase>()
+		private UdiDB CreateDatabaseContext() {
+			var options = new DbContextOptionsBuilder<UdiDB>()
 				.UseInMemoryDatabase(databaseName: $"InMemoryDb_{Guid.NewGuid()}")
 				.Options;
 
-			return new UdiDatabase(options);
+			return new UdiDB(options);
 		}
 
 		public void Dispose() {

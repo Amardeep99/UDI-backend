@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace UDI_backend.Models;
 
-public class UdiDatabase : DbContext, IUdiDatabase {
+public class UdiDB : DbContext, IUdiDB {
 
 	public DbSet<Application> Applications => Set<Application>();
 	public DbSet<Form> Forms => Set<Form>();
 	public DbSet<Reference> References => Set<Reference>();
 
-	public UdiDatabase(DbContextOptions<UdiDatabase> options) : base(options) {
+	public UdiDB(DbContextOptions<UdiDB> options) : base(options) {
 	}
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder) {

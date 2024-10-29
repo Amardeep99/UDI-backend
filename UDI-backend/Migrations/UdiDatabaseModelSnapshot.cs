@@ -10,7 +10,7 @@ using UDI_backend.Models;
 
 namespace UDI_backend.Migrations
 {
-    [DbContext(typeof(UdiDatabase))]
+    [DbContext(typeof(UdiDB))]
     partial class UdiDatabaseModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

@@ -2,7 +2,7 @@
 
 namespace UDI_backend.Database;
 
-public interface IUdiApplicationManager {
+public interface IUDIApplicationService {
 	// Reference related methods
 	bool ReferenceExists(int refNr);
 	Reference GetReference(int refNr);
@@ -25,6 +25,6 @@ public interface IUdiApplicationManager {
 	// Validation methods
 	bool CheckValidHasObjectionAndHasDebt(bool hasObjection, bool hasDebt);
 	bool CheckValidDateOnlyOrNull(string? date);
-	bool CheckIfApplicationValid(IUdiDatabase db, int dNumber, string travelDate);
+	bool CheckIfApplicationValid(IUdiDB db, int dNumber, string travelDate);
 	int CreateUniqueReferenceNumber();
 }

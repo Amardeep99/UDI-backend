@@ -11,7 +11,7 @@ using UDI_backend.Models;
 
 namespace UDI_backend.Migrations
 {
-    [DbContext(typeof(UdiDatabase))]
+    [DbContext(typeof(UdiDB))]
     [Migration("20241026110335_newInit")]
     partial class newInit
     {

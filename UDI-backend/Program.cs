@@ -13,10 +13,10 @@ namespace UDI_backend {
 			// Add services to the container.
 			var connectionString = builder.Configuration.GetConnectionString("UdiDatabase");
 
-			builder.Services.AddDbContext<IUdiDatabase, UdiDatabase>(options =>
+			builder.Services.AddDbContext<IUdiDB, UdiDB>(options =>
 				options.UseSqlServer(connectionString).UseLowerCaseNamingConvention());
 
-			builder.Services.AddScoped<IUdiApplicationManager, UdiApplicationManager>();
+			builder.Services.AddScoped<IUDIApplicationService, UDIApplicationService>();
 
 			builder.Services.AddControllers();
 

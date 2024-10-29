@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace UDI_backend.Models {
-	public interface IUdiDatabase {
+	public interface IUdiDB {
 		DbSet<Application> Applications { get; }
 		DbSet<Form> Forms { get; }
 		DbSet<Reference> References { get; }
